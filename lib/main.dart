@@ -1,4 +1,5 @@
 import 'package:ashdod_port_flutter/screens/getting_started.dart';
+import 'package:ashdod_port_flutter/screens/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,6 +14,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      routes: <String, WidgetBuilder> {
+        '/getReady': (BuildContext context) => const GetReadyPage(),
+        '/login': (BuildContext context) => const LoginPage()
+      },
       theme: ThemeData(
         // This is the theme of your application.
         //
