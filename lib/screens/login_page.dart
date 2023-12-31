@@ -15,17 +15,25 @@ class _LoginPageState extends State<LoginPage> {
         appBar: AppBar(),
         body: Stack(
             children: [
-              Image.asset('assets/login_page_bg.png'),
+            Align(alignment: AlignmentDirectional.bottomStart, child: Image.asset('assets/login_page_bg.png')),
                   Padding(
-                      padding: const EdgeInsets.only(bottom: 30.0, left: 30.0, right: 30.0),
+                      padding: const EdgeInsets.only(bottom: 25.0, left: 30.0, right: 30.0),
                       child:Column(
                         children: [
-                          Text('Welcome Back!'),
-                          Text('Enter Your Username & Password'),
-                          Text('Username'),
+                          Text('Welcome Back!', style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 10),
+                          Text('Enter Your Username & Password', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                          Spacer(),
+                          Align(
+                              alignment: Alignment.topLeft,
+                              child: Text('Username', style: TextStyle(fontSize: 22),)),
                           TextField(),
-                          Text('Password'),
-                          TextField(keyboardType: TextInputType.none),
+                          //SizedBox(height: 25),
+                          Align(
+                              alignment: Alignment.topLeft,
+                              child: Text('Password', style: TextStyle(fontSize: 22),)),
+                          TextField(),
+                          Spacer(),
                           LoginButton(
                             onPressed: () {
                               Navigator.pushNamed(context, '/get_in');
@@ -37,11 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                           },),
                         ],
                       ))
-
-
-
             ])
         );
-
   }
 }
