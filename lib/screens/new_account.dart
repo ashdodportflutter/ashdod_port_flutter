@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../components/app_buttons.dart';
+
 class CreateAccount extends StatefulWidget {
   const CreateAccount({super.key});
 
@@ -23,6 +25,26 @@ class _CreateAccountState extends State<CreateAccount> {
                       children: [
                         Text('Create Account :)', style: TextStyle(
                             fontSize: 40, fontWeight: FontWeight.bold)),
+                        Spacer(),
+                        Align(
+                            alignment: Alignment.topLeft,
+                            child: Text('Enter Email Id', style: TextStyle(fontSize: 22),)),
+                        TextField(),
+                        //SizedBox(height: 25),
+                        Align(
+                            alignment: Alignment.topLeft,
+                            child: Text('Create Username', style: TextStyle(fontSize: 22),)),
+                        TextField(),
+                        Align(
+                            alignment: Alignment.topLeft,
+                            child: Text('Create Password', style: TextStyle(fontSize: 22),)),
+                        TextField(),
+                        Spacer(),
+                        LoginButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/login');
+                          },
+                          text: 'Sign Up',),
                       ]
                   )
               ),
