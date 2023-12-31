@@ -1,5 +1,6 @@
 import 'package:ashdod_port_flutter/screens/getting_started.dart';
 import 'package:ashdod_port_flutter/screens/login_page.dart';
+import 'package:ashdod_port_flutter/screens/new_account.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,7 +17,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       routes: <String, WidgetBuilder> {
         '/getReady': (BuildContext context) => const GetReadyPage(),
-        '/login': (BuildContext context) => const LoginPage()
+        '/login': (BuildContext context) => const LoginPage(),
+        '/create_account': (BuildContext context) => const CreateAccount(),
+        '/get_in': (BuildContext context) => const MyHomePage(title: '',),
+
       },
       theme: ThemeData(
         // This is the theme of your application.
@@ -41,6 +45,8 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+//##############################################################################
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
