@@ -21,7 +21,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       bottom: 25.0, left: 30.0, right: 30.0),
                   child: Column(
                       children: [
-                        Text('Welcome Back !', style: TextStyle(
+                        Text('Create Account :)', style: TextStyle(
                             fontSize: 40, fontWeight: FontWeight.bold)),
                       ]
                   )
