@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
                       padding: const EdgeInsets.only(bottom: 25.0, left: 30.0, right: 30.0),
                       child:Column(
                         children: [
-                          Text('Welcome Back! :)', style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+                          Text('Welcome Back! !', style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
                           SizedBox(height: 10),
                           Text('Enter Your Username & Password', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
                           Spacer(),
