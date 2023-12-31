@@ -10,14 +10,25 @@ class CreateAccount extends StatefulWidget {
 class _CreateAccountState extends State<CreateAccount> {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
         appBar: AppBar(),
-    body: Stack(
-    children: [
-     Align(alignment: AlignmentDirectional.bottomStart, child: Image.asset('assets/sign_up_bg.png')),
-      ]
-    )
+        body: Stack(
+            children: [
+              Align(alignment: AlignmentDirectional.bottomStart,
+                  child: Image.asset('assets/sign_up_bg.png')),
+              Padding(
+                  padding: const EdgeInsets.only(
+                      bottom: 25.0, left: 30.0, right: 30.0),
+                  child: Column(
+                      children: [
+                        Text('Welcome Back !', style: TextStyle(
+                            fontSize: 40, fontWeight: FontWeight.bold)),
+                      ]
+                  )
+              ),
+            ]
+        )
     );
-
   }
 }
+
