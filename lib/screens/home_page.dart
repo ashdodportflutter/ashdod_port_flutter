@@ -15,10 +15,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return  Scaffold(
            body:  inputDate(),
-        );
+    );
   }
 
-  Widget inputDate() {
+  inputDate() {
     return
       Padding(
         padding: const EdgeInsets.only(top: 80, right: 30, left: 30),
