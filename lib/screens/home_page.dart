@@ -25,7 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget inputDate() {
     return
       Padding(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.only(top: 10),
         child: TextField(
           decoration: const InputDecoration(
             labelText: 'DATE',
@@ -38,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 borderSide: BorderSide(color: Colors.blue)
             ),
           ),
+          controller: _dateController,
           readOnly: true,
           onTap:() {
             _selectDate(context);
