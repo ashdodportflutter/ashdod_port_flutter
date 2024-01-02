@@ -37,7 +37,7 @@ class _CreateAccountState extends State<CreateAccount> {
                         TextField(),
                         Align(
                             alignment: Alignment.topLeft,
-                            child: Text('Create Password', style: TextStyle(fontSize: 22),)),
+                            child: Text('Create Password:', style: TextStyle(fontSize: 22),)),
                         TextField(),
                         Spacer(),
                         LoginButton(
