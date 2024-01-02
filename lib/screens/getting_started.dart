@@ -49,7 +49,7 @@ class GetReadyPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamed(context, '/login');
                   },
-                  text: 'Join Now',)
+                  text: 'Join Now!',)
               )
             ],
           ),
