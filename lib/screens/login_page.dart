@@ -9,6 +9,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _passwordTextController = TextEditingController();
+  final _usernameTextController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,19 +30,21 @@ class _LoginPageState extends State<LoginPage> {
                           Align(
                               alignment: Alignment.topLeft,
                               child: Text('Username', style: TextStyle(fontSize: 22),)),
-                          TextField(),
-                          //SizedBox(height: 25),
+                          TextField(controller: _usernameTextController,),
+                          Spacer(),
                           Align(
                               alignment: Alignment.topLeft,
                               child: Text('Password', style: TextStyle(fontSize: 22),)),
-                          TextField(),
+                          TextField(controller: _passwordTextController,),
                           Spacer(),
                           LoginButton(
                             onPressed: () {
+                              print(_usernameTextController.text + ' '+ _passwordTextController.text);
                               Navigator.pushNamed(context, '/get_in');
                             },
                             text: 'Login',),
-                          TextButton(child:Text('Forgotten Password?'), onPressed: () {  }, ),
+                          TextButton(child:Text('Forgotten Password?'), onPressed: () {
+                             }, ),
                           TextButton(child:Text('Or Create a New Account'), onPressed: () {
                             Navigator.pushNamed(context, '/create_account');
                           },),
