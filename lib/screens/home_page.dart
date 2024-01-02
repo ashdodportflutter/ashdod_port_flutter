@@ -13,19 +13,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return  Scaffold(
-        body: Center(
-          child: inputDate(),
-        )
-    );
-
+           body:  inputDate(),
+        );
   }
 
   Widget inputDate() {
     return
       Padding(
-        padding: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.only(top: 80, right: 30, left: 30),
         child: TextField(
           decoration: const InputDecoration(
             labelText: 'DATE',
