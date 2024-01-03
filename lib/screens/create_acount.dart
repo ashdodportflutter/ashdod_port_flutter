@@ -3,14 +3,17 @@ import 'package:flutter/material.dart';
 import '../components/app_buttons.dart';
 import '../components/app_text_field.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+
+
+class CreateAccount extends StatefulWidget {
+  const CreateAccount({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<CreateAccount> createState() => _CreateAccountPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _CreateAccountPageState extends State<CreateAccount> {
+  final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
   final _usernameTextController = TextEditingController();
 
@@ -31,20 +34,25 @@ class _LoginPageState extends State<LoginPage> {
       child: Stack(children: [
         Align(
             alignment: Alignment.bottomLeft,
-            child: Image.asset('assets/login_page_bg.png')),
+            child: Image.asset('assets/sign_up_bg.png')),
         Column(
           children: [
             showWellCome(),
-            showLitleText(),
+
             Spacer(),
             AppTextField(
 
-              text: 'User Name',
+              text: 'Enter Email Id',
+              controller: _emailTextController,
+            ),
+            AppTextField(
+
+              text: 'Create User Name',
               controller: _usernameTextController,
             ),
             AppTextField(
 
-              text: 'Password',
+              text: 'Create Password',
               controller: _passwordTextController,
             ),
             Spacer(flex: 1,),
@@ -53,31 +61,22 @@ class _LoginPageState extends State<LoginPage> {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: Column(children: [
-                    LoginButton(
-                      onPressed: () {
-                        print(_passwordTextController.text);
-                        print(_usernameTextController.text);
-                        //Navigator.pushNamed(context, '/login');
-                      },
-                      text: 'Login',
-                    ),
                     Padding(
-                      padding: EdgeInsets.only(top: 20),
-                      child: InkWell(
-                        child: Text("forget Password"),
-                        onTap: () {print("forget Password");},
-                      ),
-                    ), Padding(
-                      padding: EdgeInsets.only(bottom: 30),
-                      child: InkWell(
-                        child: Text("Or Create new Account"),
-                        onTap: () {
-                          Navigator.pushNamed(context, '/create_account');
+
+                      padding:EdgeInsets.only(bottom: 50),
+                      child: LoginButton(
+                        onPressed: () {
+                          print(_passwordTextController.text);
+                          print(_usernameTextController.text);
+                          //Navigator.pushNamed(context, '/login');
                         },
+                        text: 'Sign Up',
                       ),
-                    )
-,
-                
+                    ),
+
+
+
+
                   ]),
                 ))
           ],
@@ -88,15 +87,10 @@ class _LoginPageState extends State<LoginPage> {
 
   showWellCome() {
     return Text(
-      'Welcome Back!',
+      'Create Account :)',
       style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
     );
   }
 
-  showLitleText() {
-    return Text(
-      'Enter Your UserName & Password',
-      style: TextStyle(fontSize: 20),
-    );
-  }
+
 }
