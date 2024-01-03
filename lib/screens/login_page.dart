@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ashdod_port_flutter/components/app_buttons.dart';
 
-import '../components/app_textFields.dart';
+import '../components/app_buttons.dart';
+import '../components/app_text_field.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,49 +12,130 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _passwordTextController = TextEditingController();
+  final _usernameTextController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Align(alignment: Alignment.bottomCenter,child: Image.asset('assets/login_page_bg.png')),
-          Padding(
-            padding: const EdgeInsets.only(top: 100.0, bottom: 30.0, left: 30.0, right: 30.0),
-            child: Column(
-              children: [
-                Align(alignment: Alignment.centerLeft,child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children:
-                [
-                  Text('Welcome back!', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
-                  Text('Enter your username & password', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)
-                ],
-                )
-                ),
-                Spacer(),
-
-                TextFields(Label: "Username",TF: TextField()),
-                Padding(padding: const EdgeInsets.only(top: 20.0, bottom: 30.0, left: 30.0, right: 30.0)),
-                TextFields(Label: "Password",TF: TextField()),
-                Padding(padding: const EdgeInsets.only(top: 50.0, bottom: 30.0, left: 30.0, right: 30.0)),
-
-                Padding(
-                    padding: const EdgeInsets.only(top: 8.0,bottom: 15),
-                    child: LoginButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/login');
-                      },
-                      text: 'Login',)
-                ),
-                Align(alignment: Alignment.center,child: Text('Forgotten Password', style: TextStyle(fontSize: 15,color: Colors.grey))),
-                Align(alignment: Alignment.center,child: Text('Or Create A New Account',style: TextStyle(fontSize: 15,color: Colors.grey))),
-                Padding(padding: const EdgeInsets.only(top: 20.0, bottom: 30.0, left: 30.0, right: 30.0)),
-
-              ],
-            ),
-          ),
-        ],
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        actions: [],
       ),
+      body: getBody(),
     );
   }
+
+  getBody() {
+    return Align(
+      alignment: Alignment.center,
+      child: Stack(children: [
+        Align(
+            alignment: Alignment.bottomLeft,
+            child: Image.asset('assets/login_page_bg.png')),
+        Column(
+          children: [
+            showWellCome(),
+            showLitleText(),
+            Spacer(),
+            AppTextField(
+              text: 'User Name',
+              controller: _usernameTextController,
+            ),
+            AppTextField(
+              text: 'Password',
+              controller: _passwordTextController,
+            ),
+            Spacer(
+              flex: 1,
+            ),
+            Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: Column(children: [
+                    LoginButton(
+                      onPressed: () {
+                        print(_passwordTextController.text);
+                        print(_usernameTextController.text);
+                        FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                                email: _usernameTextController.text,
+                                password: _passwordTextController.text)
+                            .then((value) {
+                          if (value.user != null) {
+                            print(value.user?.email);
+                          }
+                        });
+                        //Navigator.pushNamed(context, '/login');
+                      },
+                      text: 'Login',
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: InkWell(
+                        child: Text("forget Password"),
+                        onTap: () {
+                          print("forget Password");
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 30),
+                      child: InkWell(
+                        child: Text("Or Create new Account"),
+                        onTap: () {
+                          Navigator.pushNamed(context, '/create_account');
+                        },
+                      ),
+                    ),
+                  ]),
+                ))
+          ],
+        ),
+        getLoader(true)
+      ]),
+    );
+  }
+
+  showWellCome() {
+    return Text(
+      'Welcome Back!',
+      style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+    );
+  }
+
+  showLitleText() {
+    return Text(
+      'Enter Your UserName & Password',
+      style: TextStyle(fontSize: 20),
+    );
+  }
+
+
+    Widget getLoader(misloading) {
+      return Visibility(
+        visible: misloading,
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          color: Colors.black45,
+          child: const Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CircularProgressIndicator(),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                'Loading...',
+                style: TextStyle(color: Colors.white, fontSize: 30),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+
 }

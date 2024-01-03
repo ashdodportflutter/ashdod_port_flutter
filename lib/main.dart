@@ -1,8 +1,16 @@
+import 'package:ashdod_port_flutter/screens/create_acount.dart';
 import 'package:ashdod_port_flutter/screens/getting_started.dart';
 import 'package:ashdod_port_flutter/screens/login_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -16,7 +24,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       routes: <String, WidgetBuilder> {
         '/getReady': (BuildContext context) => const GetReadyPage(),
-        '/login': (BuildContext context) => const LoginPage()
+        '/login': (BuildContext context) => const LoginPage(),
+        '/create_account': (BuildContext context) => const CreateAccount(),
+
       },
       theme: ThemeData(
         // This is the theme of your application.
