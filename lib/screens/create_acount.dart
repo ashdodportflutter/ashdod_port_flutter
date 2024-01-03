@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../components/app_buttons.dart';
@@ -15,7 +16,7 @@ class CreateAccount extends StatefulWidget {
 class _CreateAccountPageState extends State<CreateAccount> {
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
-  final _usernameTextController = TextEditingController();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,59 +30,89 @@ class _CreateAccountPageState extends State<CreateAccount> {
   }
 
   getBody() {
-    return Align(
-      alignment: Alignment.center,
-      child: Stack(children: [
-        Align(
-            alignment: Alignment.bottomLeft,
-            child: Image.asset('assets/sign_up_bg.png')),
-        Column(
-          children: [
-            showWellCome(),
+    return Stack(
+        children: [
+      Align(
+          alignment: Alignment.bottomLeft,
+          child: Image.asset('assets/sign_up_bg.png')),
+      Column(
+        children: [
+          showWellCome(),
 
-            Spacer(),
-            AppTextField(
+          Spacer(),
+          AppTextField(
 
-              text: 'Enter Email Id',
-              controller: _emailTextController,
+            text: 'Enter Email Id',
+            controller: _emailTextController,
+          ),
+          AppTextField(
+
+            text: 'Create Password',
+            controller: _passwordTextController,
+          ),
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10.0),
+            child: Column(children: [
+              Padding(
+
+                padding:EdgeInsets.only(bottom: 50),
+                child: LoginButton(
+                  onPressed: () {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    FirebaseAuth.instance.createUserWithEmailAndPassword(
+                        email: _emailTextController.text,
+                        password: _passwordTextController.text).then((value) => {
+                          if (value.user == null) {
+                            // error
+                          } else
+                            {
+                              setState(() {
+                                isLoading = false;
+                              }),
+                              Navigator.pushNamed(context, 'main_page')
+                            }
+                    });
+                  },
+                  text: 'Sign Up',
+                ),
+              ),
+
+
+
+
+            ]),
+          )
+        ],
+      ),
+      getLoader(isLoading)
+    ]);
+  }
+
+  Widget getLoader(misloading) {
+    return Visibility(
+      visible: misloading,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        color: Colors.black45,
+        child: const Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(),
+            SizedBox(
+              height: 20,
             ),
-            AppTextField(
-
-              text: 'Create User Name',
-              controller: _usernameTextController,
-            ),
-            AppTextField(
-
-              text: 'Create Password',
-              controller: _passwordTextController,
-            ),
-            Spacer(flex: 1,),
-            Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Column(children: [
-                    Padding(
-
-                      padding:EdgeInsets.only(bottom: 50),
-                      child: LoginButton(
-                        onPressed: () {
-                          print(_passwordTextController.text);
-                          print(_usernameTextController.text);
-                          //Navigator.pushNamed(context, '/login');
-                        },
-                        text: 'Sign Up',
-                      ),
-                    ),
-
-
-
-
-                  ]),
-                ))
+            Text(
+              'Loading...',
+              style: TextStyle(color: Colors.white, fontSize: 30),
+            )
           ],
         ),
-      ]),
+      ),
     );
   }
 
