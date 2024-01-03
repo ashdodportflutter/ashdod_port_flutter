@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../components/app_buttons.dart';
@@ -38,16 +39,16 @@ class _LoginPageState extends State<LoginPage> {
             showLitleText(),
             Spacer(),
             AppTextField(
-
               text: 'User Name',
               controller: _usernameTextController,
             ),
             AppTextField(
-
               text: 'Password',
               controller: _passwordTextController,
             ),
-            Spacer(flex: 1,),
+            Spacer(
+              flex: 1,
+            ),
             Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -57,6 +58,15 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         print(_passwordTextController.text);
                         print(_usernameTextController.text);
+                        FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                                email: _usernameTextController.text,
+                                password: _passwordTextController.text)
+                            .then((value) {
+                          if (value.user != null) {
+                            print(value.user?.email);
+                          }
+                        });
                         //Navigator.pushNamed(context, '/login');
                       },
                       text: 'Login',
@@ -65,9 +75,12 @@ class _LoginPageState extends State<LoginPage> {
                       padding: EdgeInsets.only(top: 20),
                       child: InkWell(
                         child: Text("forget Password"),
-                        onTap: () {print("forget Password");},
+                        onTap: () {
+                          print("forget Password");
+                        },
                       ),
-                    ), Padding(
+                    ),
+                    Padding(
                       padding: EdgeInsets.only(bottom: 30),
                       child: InkWell(
                         child: Text("Or Create new Account"),
@@ -75,13 +88,12 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.pushNamed(context, '/create_account');
                         },
                       ),
-                    )
-,
-                
+                    ),
                   ]),
                 ))
           ],
         ),
+        getLoader(true)
       ]),
     );
   }
@@ -99,4 +111,31 @@ class _LoginPageState extends State<LoginPage> {
       style: TextStyle(fontSize: 20),
     );
   }
+
+
+    Widget getLoader(misloading) {
+      return Visibility(
+        visible: misloading,
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          color: Colors.black45,
+          child: const Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CircularProgressIndicator(),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                'Loading...',
+                style: TextStyle(color: Colors.white, fontSize: 30),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+
 }

@@ -11,7 +11,7 @@ class GetReadyPage extends StatelessWidget {
         children: [
           Image.asset('assets/first_page_bg.png'),
           Padding(
-          padding: const EdgeInsets.only(top: 150.0, bottom: 30.0, left: 30.0, right: 30.0),
+          padding: const EdgeInsets.only(top: 100.0, bottom: 30.0, left: 30.0, right: 30.0),
           child: Column(
             children: [
               Align(
@@ -44,7 +44,7 @@ class GetReadyPage extends StatelessWidget {
                   alignment: Alignment.topLeft,
                   child: Text('Grow Together', style: TextStyle(fontSize: 22),)),
               Padding(
-                padding: const EdgeInsets.only(top: 8.0),
+                padding: const EdgeInsets.only(top: 1.0),
                 child: LoginButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/login');

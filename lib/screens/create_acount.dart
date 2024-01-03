@@ -1,9 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../components/app_buttons.dart';
 import '../components/app_text_field.dart';
-
-
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({super.key});
@@ -16,6 +15,7 @@ class _CreateAccountPageState extends State<CreateAccount> {
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
   final _usernameTextController = TextEditingController();
+  bool isLoading = true;
 
   @override
   Widget build(BuildContext context) {
@@ -38,45 +38,49 @@ class _CreateAccountPageState extends State<CreateAccount> {
         Column(
           children: [
             showWellCome(),
-
             Spacer(),
-            AppTextField(
 
-              text: 'Enter Email Id',
+            AppTextField(
+              text: 'Create User Name',
               controller: _emailTextController,
             ),
             AppTextField(
-
-              text: 'Create User Name',
-              controller: _usernameTextController,
-            ),
-            AppTextField(
-
               text: 'Create Password',
               controller: _passwordTextController,
             ),
-            Spacer(flex: 1,),
+            Spacer(
+              flex: 1,
+            ),
             Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: Column(children: [
                     Padding(
-
-                      padding:EdgeInsets.only(bottom: 50),
+                      padding: EdgeInsets.only(bottom: 50),
                       child: LoginButton(
                         onPressed: () {
-                          print(_passwordTextController.text);
-                          print(_usernameTextController.text);
+                          FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                                  email: _emailTextController.text,
+                                  password: _passwordTextController.text)
+                              .then((value) => {
+                                    setState(() {
+                                      if(value.user==null)
+                                        {
+
+                                        }
+                                      else
+                                        {
+
+                                        }
+                                    })
+                                  });
                           //Navigator.pushNamed(context, '/login');
                         },
                         text: 'Sign Up',
                       ),
                     ),
-
-
-
-
                   ]),
                 ))
           ],
@@ -91,6 +95,4 @@ class _CreateAccountPageState extends State<CreateAccount> {
       style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
     );
   }
-
-
 }
