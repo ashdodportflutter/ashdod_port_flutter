@@ -11,9 +11,10 @@ class GetReadyPage extends StatelessWidget {
         children: [
           Image.asset('assets/first_page_bg.png'),
           Padding(
-          padding: const EdgeInsets.only(top: 150.0, bottom: 30.0, left: 30.0, right: 30.0),
+          padding: const EdgeInsets.only(bottom: 30.0, left: 30.0, right: 30.0),
           child: Column(
             children: [
+              Spacer(),
               Align(
                 alignment: Alignment.topRight,
                 child: Padding(
@@ -39,7 +40,12 @@ class GetReadyPage extends StatelessWidget {
                 ),
               ),
               Spacer(),
-              Text('Let\'s get started', style: TextStyle(fontSize: 70, fontWeight: FontWeight.bold),),
+              Padding(
+                padding: const EdgeInsets.only(right: 28.0),
+                child: FittedBox(
+                  fit: BoxFit.fitWidth,
+                    child: Text(textAlign: TextAlign.start,'Let\'s get\n started', style: TextStyle(fontSize: 70, fontWeight: FontWeight.bold),maxLines: 2,)),
+              ),
               Align(
                   alignment: Alignment.topLeft,
                   child: Text('Grow Together', style: TextStyle(fontSize: 22),)),
@@ -49,7 +55,7 @@ class GetReadyPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamed(context, '/login');
                   },
-                  text: 'Join Now',)
+                  text: 'Join Now!',)
               )
             ],
           ),
