@@ -60,43 +60,73 @@ class _MyHomePageState extends State<MyHomePage> {
       List<Widget>.generate(
           _count,
               (int index) {
-            String name = '';
-            switch (index) {
-              case 0:
-                name = 'MAROM';
-              case 1:
-                name = 'DOV';
-              case 2:
-                name = 'NIR';
-              case 3:
-                name = 'LIOR';
-              case 4:
-                name = 'ITZIK';
-              case 5:
-                name = 'ROMAN';
-              default:
-                {
-                  name = '-';
+                String name = '';
+                switch (index) {
+                  case 0:
+                    name = 'MAROM';
+                  case 1:
+                    name = 'DOV';
+                  case 2:
+                    name = 'NIR';
+                  case 3:
+                    name = 'LIOR';
+                  case 4:
+                    name = 'ITZIK';
+                  case 5:
+                    name = 'ROMAN';
+                  default:
+                    {
+                      name = '-';
+                    }
+                    break;
                 }
-                break;
-            }
-            return GridTile(
-                child: Card(
-                  color: Color(
-                      (Random().nextDouble() * 0xFFFFFF).toInt() << 0)
-                      .withOpacity(1.0),
-                  //margin: EdgeInsets.all(0),
-                  child:
-                  Text('\n\n' + name,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), ),
-                )
-            );
-          }
+                return GridTile(
+                    child: Card(
+                        color: Color(
+                            (Random().nextDouble() * 0xFFFFFF).toInt() << 0)
+                            .withOpacity(1.0),
+                        clipBehavior: Clip.hardEdge,
+                        child: InkWell(
+                          splashColor: Colors.blue.withAlpha(30),
+                          child: Text('\n\n' + name,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18.0),),
+                          onTap: () {
+                            debugPrint('Card tapped.');
+
+                          },
+                        )
+                    )
+                );
+              }
 
       ),
     );
   }
+
+  _showDialogBox() {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) =>
+          AlertDialog(
+            title: const Text('AlertDialog Title'),
+            content: const Text('AlertDialog description'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Cancel'),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'OK'),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+    );
+    //child: const Text('Show Dialog');
+  }
+
 
   Future<void> _selectDate(BuildContext context) async {
     DateTime? _picked = await showDatePicker(
