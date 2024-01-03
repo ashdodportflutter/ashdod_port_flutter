@@ -15,90 +15,101 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-           body: inputDate(),
-           //endDrawer: gridCards(4) ,
-
-                   //inputDate(),
-
-
-
-    );
-
-
+    return Scaffold(
+        body: Padding(
+            padding: const EdgeInsets.only(top: 60, right: 30, left: 30),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                inputDate(),
+                Divider(height: 20,),
+                Expanded(child: gridCards(6))
+              ],
+            )
+        ));
   }
 
-  Padding inputDate() {
-    return
-      Padding(
-        padding: const EdgeInsets.only(top: 50, right: 30, left: 30),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'DATE',
-                filled: true,
-                prefixIcon: Icon(Icons.calendar_today),
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide.none
-                ),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue)
-                ),
-              ),
-              controller: _dateController,
-              readOnly: true,
-              onTap:() {
-                _selectDate(context);
-              },
-            ),
-            Expanded(
-              child: gridCards(4),
-
-            )
-          ],
-        )
-
-
-      );
+  TextField inputDate() {
+    return TextField(
+      decoration: const InputDecoration(
+        labelText: 'DATE',
+        filled: true,
+        prefixIcon: Icon(Icons.calendar_today),
+        enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide.none
+        ),
+        focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.blue)
+        ),
+      ),
+      controller: _dateController,
+      readOnly: true,
+      onTap: () {
+        _selectDate(context);
+      },
+    );
   }
 
   GridView gridCards(int _count) {
     return GridView.count(
-        primary: false,
-        padding: const EdgeInsets.all(20.0),
-        crossAxisSpacing: 10.0,
-        crossAxisCount: 2,
-        children:
-        List<Widget>.generate(
+      primary: false,
+      padding: const EdgeInsets.all(5.0),
+      crossAxisSpacing: 10.0,
+      crossAxisCount: 2,
+      children:
+      List<Widget>.generate(
           _count,
               (int index) {
+            String name = '';
+            switch (index) {
+              case 0:
+                name = 'MAROM';
+              case 1:
+                name = 'DOV';
+              case 2:
+                name = 'NIR';
+              case 3:
+                name = 'LIOR';
+              case 4:
+                name = 'ITZIK';
+              case 5:
+                name = 'ROMAN';
+              default:
+                {
+                  name = '-';
+                }
+                break;
+            }
             return GridTile(
-              child: Card(
-                color:
-                Color((Random().nextDouble() * 0xFFFFFF).toInt() << 0)
-                    .withOpacity(1.0),
-              ),
+                child: Card(
+                  color: Color(
+                      (Random().nextDouble() * 0xFFFFFF).toInt() << 0)
+                      .withOpacity(1.0),
+                  //margin: EdgeInsets.all(0),
+                  child:
+                  Text('\n\n' + name,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0), ),
+                )
             );
-          },
-        ));
+          }
+
+      ),
+    );
   }
 
-
-  Future<void> _selectDate(BuildContext context) async{
-     DateTime? _picked = await showDatePicker(
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? _picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
-     );
-     if(_picked != null)
-       {
-         setState(() {
-           _dateController.text= _picked.toString().split(' ')[0];
-         });
-       }
+    );
+    if (_picked != null) {
+      setState(() {
+        _dateController.text = _picked.toString().split(' ')[0];
+      });
+    }
   }
 }
+
