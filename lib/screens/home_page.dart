@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 fontWeight: FontWeight.bold, fontSize: 18.0),),
                           onTap: () {
                             debugPrint('Card tapped.');
-
+                            _showDialogBox(name);
                           },
                         )
                     )
@@ -105,12 +105,12 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  _showDialogBox() {
+  _showDialogBox(String msg) {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) =>
           AlertDialog(
-            title: const Text('AlertDialog Title'),
+            title:  Text(msg),
             content: const Text('AlertDialog description'),
             actions: <Widget>[
               TextButton(
@@ -126,7 +126,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     //child: const Text('Show Dialog');
   }
-
 
   Future<void> _selectDate(BuildContext context) async {
     DateTime? _picked = await showDatePicker(

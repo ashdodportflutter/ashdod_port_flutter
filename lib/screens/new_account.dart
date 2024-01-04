@@ -1,3 +1,5 @@
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../components/app_buttons.dart';
 
@@ -12,6 +14,7 @@ class _CreateAccountState extends State<CreateAccount> {
   final _emailTextController = TextEditingController();
   final _usernameTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
+  bool isLoading=false;
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +51,27 @@ class _CreateAccountState extends State<CreateAccount> {
                         //SizedBox(height: 10,),
                         LoginButton(
                           onPressed: () {
+                            FirebaseAuth.instance.createUserWithEmailAndPassword(
+                                email: _emailTextController.text, password: _passwordTextController.text).then((value)
+                                {
+                                  if (value.user== null)
+                                    {
+                                      //ERROR
+                                    }
+                                  else{
+                                    setState(() {
+                                      isLoading =false;
+                                    });
+                                  }
+                                }
+                            );
                             Navigator.pushNamed(context, '/login');
                           },
                           text: 'Sign Up',),
                       ]
                   )
               ),
+              isLoading ? Container(color: Colors.black12,child: Center(child: CircularProgressIndicator()),):Container()
             ]
         )
     );
