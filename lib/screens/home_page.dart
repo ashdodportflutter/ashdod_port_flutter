@@ -65,15 +65,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   case 0:
                     name = 'MAROM';
                   case 1:
-                    name = 'DOV';
-                  case 2:
                     name = 'NIR';
+                  case 2:
+                    name = 'DOV';
                   case 3:
                     name = 'LIOR';
                   case 4:
-                    name = 'ITZIK';
-                  case 5:
                     name = 'ROMAN';
+                  case 5:
+                    name = 'ITZIK';
                   default:
                     {
                       name = '-';
