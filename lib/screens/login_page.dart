@@ -1,3 +1,5 @@
+import 'package:ashdod_port_flutter/models/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -64,11 +66,14 @@ class _LoginPageState extends State<LoginPage> {
                             password: _passwordTextController.text).then((
                             value) {
                           if (value.user != null) {
+                            FirebaseFirestore.instance.collection('employees').doc(value.user?.uid).get().then((value) => {
+                              AppUser.instance.update(value.data()!.cast<String, dynamic>())
+                            });
                             setState(() {
                               isLoading = false;
                             });
                             print(value.user?.email ?? 'no email');
-                            Navigator.pushNamed(context, '/main_page');
+                            Navigator.pushNamed(context, '/home_page');
                           }
                         });
                       } on FirebaseAuthException catch(e) {
