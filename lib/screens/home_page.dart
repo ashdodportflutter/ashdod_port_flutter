@@ -63,17 +63,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 String name = '';
                 switch (index) {
                   case 0:
-                    name = 'MAROM';
+                    name = 'מרום';
                   case 1:
-                    name = 'NIR';
+                    name = 'ניר';
                   case 2:
-                    name = 'DOV';
+                    name = 'דב';
                   case 3:
-                    name = 'LIOR';
+                    name = 'ליאור';
                   case 4:
-                    name = 'ROMAN';
+                    name = 'רומן';
                   case 5:
-                    name = 'ITZIK';
+                    name = 'איציק';
                   default:
                     {
                       name = '-';
