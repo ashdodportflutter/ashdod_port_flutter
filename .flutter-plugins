@@ -1,7 +1,20 @@
 # This is a generated file; do not edit or check into version control.
-cloud_firestore=C:\\Users\\User\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\cloud_firestore-4.14.0\\
-cloud_firestore_web=C:\\Users\\User\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\cloud_firestore_web-3.9.0\\
-firebase_auth=C:\\Users\\User\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\firebase_auth-4.16.0\\
-firebase_auth_web=C:\\Users\\User\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\firebase_auth_web-5.8.13\\
-firebase_core=C:\\Users\\User\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\firebase_core-2.24.2\\
-firebase_core_web=C:\\Users\\User\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\firebase_core_web-2.10.0\\
+cloud_firestore=/Users/smartpo/.pub-cache/hosted/pub.dev/cloud_firestore-4.13.6/
+cloud_firestore_web=/Users/smartpo/.pub-cache/hosted/pub.dev/cloud_firestore_web-3.8.10/
+file_selector_linux=/Users/smartpo/.pub-cache/hosted/pub.dev/file_selector_linux-0.9.2+1/
+file_selector_macos=/Users/smartpo/.pub-cache/hosted/pub.dev/file_selector_macos-0.9.3+3/
+file_selector_windows=/Users/smartpo/.pub-cache/hosted/pub.dev/file_selector_windows-0.9.3+1/
+firebase_auth=/Users/smartpo/.pub-cache/hosted/pub.dev/firebase_auth-4.15.3/
+firebase_auth_web=/Users/smartpo/.pub-cache/hosted/pub.dev/firebase_auth_web-5.8.12/
+firebase_core=/Users/smartpo/.pub-cache/hosted/pub.dev/firebase_core-2.24.2/
+firebase_core_web=/Users/smartpo/.pub-cache/hosted/pub.dev/firebase_core_web-2.10.0/
+firebase_storage=/Users/smartpo/.pub-cache/hosted/pub.dev/firebase_storage-11.6.0/
+firebase_storage_web=/Users/smartpo/.pub-cache/hosted/pub.dev/firebase_storage_web-3.6.17/
+flutter_plugin_android_lifecycle=/Users/smartpo/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.17/
+image_picker=/Users/smartpo/.pub-cache/hosted/pub.dev/image_picker-1.0.7/
+image_picker_android=/Users/smartpo/.pub-cache/hosted/pub.dev/image_picker_android-0.8.9+3/
+image_picker_for_web=/Users/smartpo/.pub-cache/hosted/pub.dev/image_picker_for_web-3.0.2/
+image_picker_ios=/Users/smartpo/.pub-cache/hosted/pub.dev/image_picker_ios-0.8.9+1/
+image_picker_linux=/Users/smartpo/.pub-cache/hosted/pub.dev/image_picker_linux-0.2.1+1/
+image_picker_macos=/Users/smartpo/.pub-cache/hosted/pub.dev/image_picker_macos-0.2.1+1/
+image_picker_windows=/Users/smartpo/.pub-cache/hosted/pub.dev/image_picker_windows-0.2.1+1/
