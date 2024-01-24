@@ -14,7 +14,7 @@ class LoginButton extends StatelessWidget {
           onPressed.call();
         },
         child: Padding(
-          padding: const EdgeInsets.only(left: 18.0, right: 18.0, top: 8.0, bottom: 8.0),
+          padding: const EdgeInsets.only(left: 18.0, right: 18.0, top: 2.0, bottom: 2.0),
           child: Text(text, style: TextStyle(fontSize: 30, color: Colors.white),),
         ));
   }

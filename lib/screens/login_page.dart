@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         actions: [],
       ),
@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
             text: 'Password',
             controller: _passwordTextController,
           ),
-          Spacer(flex: 1,),
+          Spacer(),
           Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                     text: 'Login',
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 20),
+                    padding: EdgeInsets.only(top: 10),
                     child: InkWell(
                       child: Text("forget Password"),
                       onTap: () {
@@ -98,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                         },
                     ),
                   ), Padding(
-                    padding: EdgeInsets.only(bottom: 30),
+                    padding: EdgeInsets.only(bottom: 10),
                     child: InkWell(
                       child: Text("Or Create new Account"),
                       onTap: () {
@@ -117,16 +117,27 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   showWellCome() {
-    return Text(
-      'Welcome Back!',
-      style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+    return Flexible(
+      child: FittedBox(
+        fit: BoxFit.cover,
+        child: Text(
+          'Welcome Back!',
+          style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+        ),
+      ),
     );
   }
 
   showLitleText() {
-    return Text(
-      'Enter Your UserName & Password',
-      style: TextStyle(fontSize: 20),
+    return Flexible(
+      child: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text(
+          'Enter Your UserName & Password',
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 40),
+        ),
+      ),
     );
   }
 

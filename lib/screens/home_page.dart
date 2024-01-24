@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ashdod_port_flutter/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,6 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   late List<PopUpOption> timeOption;
+  late StreamSubscription<User?> _listener;
 
   Map<String, dynamic> presence = {};
 
@@ -40,9 +43,31 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+
+  @override
+  void dispose() {
+    _listener.cancel();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
+    _listener = FirebaseAuth.instance.authStateChanges().listen((event) {
+      if (event == null) {
+        Navigator.pushReplacementNamed(context, '/login');
+      } else {
+        var now = DateTime.now();
+        FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').doc(now.dateKey()).get().then((value) {
+          setState(() {
+            value.data()?.keys.forEach((e) {
+              timeOption.firstWhere((element) => element.key == e).timestamp = DateTime.fromMillisecondsSinceEpoch(value.data()?[e]);
+              presence[e] = DateTime.fromMillisecondsSinceEpoch(value.data()?[e]).timestamp();
+            });
+          });
+        });
+      }
+    });
     timeOption = [
       PopUpOption(key: 'arrived', icon: Icon(Icons.login), text: 'Arrived', action: () {
         stamp('arrived', 0);
@@ -51,15 +76,6 @@ class _HomePageState extends State<HomePage> {
         stamp('left', 1);
       })
     ];
-    var now = DateTime.now();
-    FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').doc(now.dateKey()).get().then((value) {
-      setState(() {
-        value.data()?.keys.forEach((e) {
-          timeOption.firstWhere((element) => element.key == e).timestamp = DateTime.fromMillisecondsSinceEpoch(value.data()?[e]);
-          presence[e] = DateTime.fromMillisecondsSinceEpoch(value.data()?[e]).timestamp();
-        });
-      });
-    });
   }
 
   @override

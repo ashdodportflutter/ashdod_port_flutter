@@ -49,7 +49,7 @@ class GetReadyPage extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8.0),
                 child: LoginButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/login');
+                    Navigator.pushNamed(context, '/home_page');
                   },
                   text: 'Join Now',)
               )

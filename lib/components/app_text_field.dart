@@ -7,11 +7,11 @@ class AppTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20,20,50,0),
+      padding: const EdgeInsets.fromLTRB(20,10,50,0),
       child:
       Column(
         children: [
-          Align(alignment: Alignment.topLeft, child: Text(text,style: TextStyle(fontSize: 19))),
+          Align(alignment: Alignment.topLeft, child: Text(text,style: TextStyle(fontSize: 16))),
           TextField(
             controller: controller,
             decoration: InputDecoration(
