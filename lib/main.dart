@@ -5,6 +5,7 @@ import 'package:ashdod_port_flutter/screens/login_page.dart';
 import 'package:ashdod_port_flutter/screens/edit_user_page.dart';
 import 'package:ashdod_port_flutter/screens/new_account.dart';
 import 'package:ashdod_port_flutter/screens/presnce_list_page.dart';
+import 'package:ashdod_port_flutter/screens/users_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +33,8 @@ class MyApp extends StatelessWidget {
         '/create_account': (BuildContext context) => const CreateAccount(),
         '/edit_user_page': (BuildContext context) => const EditUserPage(),
         '/home_page': (BuildContext contex) => HomePage(),
-        '/list': (BuildContext contex) => PresenceListPage()
+        '/list': (BuildContext contex) => PresenceListPage(),
+        '/users': (BuildContext contex) => UsersPage()
 
       },
       theme: ThemeData(

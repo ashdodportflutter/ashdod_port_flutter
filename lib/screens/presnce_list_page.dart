@@ -16,16 +16,29 @@ class _PresenceListPageState extends State<PresenceListPage> {
   @override
   void initState() {
     super.initState();
+    // For observing the resluts online
     FirebaseFirestore.instance
         .collection('employees')
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .collection('presence')
-        .get()
-        .then((value) {
+        .snapshots()
+        .listen((value) {
       setState(() {
         days = value.docs.map((e) => DayModel(e.data())).toList();
       });
     });
+    
+    // For getting the reslults once
+    // FirebaseFirestore.instance
+    //     .collection('employees')
+    //     .doc(FirebaseAuth.instance.currentUser?.uid)
+    //     .collection('presence')
+    //     .get()
+    //     .then((value) {
+    //   setState(() {
+    //     days = value.docs.map((e) => DayModel(e.data())).toList();
+    //   });
+    // });
   }
 
   @override

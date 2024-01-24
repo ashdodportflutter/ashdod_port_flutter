@@ -51,5 +51,7 @@ class AppUser {
   static AppUser get instance => _instance;
 
   AppUser._();
-
+  AppUser.fromMap(Map<String, dynamic> map) {
+    update(map);
+  }
 }

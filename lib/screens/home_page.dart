@@ -108,7 +108,18 @@ class _HomePageState extends State<HomePage> {
                   Navigator.pushNamed(context, '/edit_user_page');
                 },
               ),
-            )
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                leading: Icon(Icons.edit),
+                title: Text('Users'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/users');
+                },
+              ),
+            ),
           ],
         ),
       ),
