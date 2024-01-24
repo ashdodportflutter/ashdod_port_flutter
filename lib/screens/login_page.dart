@@ -45,7 +45,6 @@ class _LoginPageState extends State<LoginPage> {
             controller: _usernameTextController,
           ),
           AppTextField(
-
             text: 'Password',
             controller: _passwordTextController,
           ),

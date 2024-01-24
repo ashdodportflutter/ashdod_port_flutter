@@ -16,7 +16,12 @@ class _PresenceListPageState extends State<PresenceListPage> {
   @override
   void initState() {
     super.initState();
-    FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').get().then((value) {
+    FirebaseFirestore.instance
+        .collection('employees')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('presence')
+        .get()
+        .then((value) {
       setState(() {
         days = value.docs.map((e) => DayModel(e.data())).toList();
       });
@@ -30,14 +35,47 @@ class _PresenceListPageState extends State<PresenceListPage> {
       body: ListView.separated(
           itemBuilder: (context, index) {
             var day = days?[index];
-            return ListTile(
-              leading: Text(day?.day ?? ''),
-              title: Text(day?.arrived ?? ''),
-              subtitle: Text(day?.left ?? ''),
-            );
+            return Column(children: [
+              SizedBox(
+                  height: 30,
+                  child: Text(day?.month ?? '',
+                      style: TextStyle(fontSize: 22, color: Colors.blue))),
+              ListTile(
+                leading: Container(
+                  padding: EdgeInsets.only(top: 16),
+                  width: 100.0,
+                  height: 100.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.red,
+                      width: 5.0,
+                    ),
+                  ),
+                  child: Text(
+                    day?.dayPresent ?? '',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                title: Column(children: [
+                  Text(
+                    '${day?.hourPresentArrived ?? ''} כניסה ',
+                    style: TextStyle(fontSize: 20, color: Colors.green),
+                  ),
+                  Text(
+                    '${day?.hourPresentLeft ?? ''} יציאה ',
+                    style: TextStyle(fontSize: 20, color: Colors.red),
+                  )
+                ]),
+                // subtitle: Text(day?.hourPresentLeft ?? ''),
+              ),
+            ]);
           },
           separatorBuilder: (context, index) {
-            return Divider(thickness: 1, color: Colors.grey,);
+            return Divider(
+              thickness: 1,
+              color: Colors.grey,
+            );
           },
           itemCount: days?.length ?? 0),
     );
