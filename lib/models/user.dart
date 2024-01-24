@@ -13,6 +13,18 @@ extension MyDateFormat on DateTime {
   String timestamp() {
     return DateFormat('dd/MM/yyyy - HH:mm:ss').format(this);
   }
+  String getDay() {
+    return DateFormat('dd').format(this);
+  }
+  String getHour() {
+    return DateFormat('HH:mm').format(this);
+  }
+  String getMonth() {
+    return DateFormat('MM').format(this);
+  }
+  String getMonthString() {
+    return DateFormat('MMMM yyyy').format(this);
+  }
 }
 
 class AppUser {
