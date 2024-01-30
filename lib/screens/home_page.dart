@@ -5,7 +5,9 @@ import 'dart:typed_data';
 import 'package:ashdod_port_flutter/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../models/popup_menu_option.dart';
@@ -22,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   late List<PopUpOption> timeOption;
   late StreamSubscription<User?> _listener;
   Uint8List? image;
+  Timestamp? imageTimestamp;
 
   Map<String, dynamic> presence = {};
 
@@ -57,6 +60,16 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).snapshots().listen((event) {
+      if (event.data()?['timestamp'] != imageTimestamp) {
+        imageTimestamp = event.data()?['timestamp'];
+        FirebaseStorage.instance.ref('${FirebaseAuth.instance.currentUser?.uid}.jpeg').getData().then((value) => {
+        setState(() {
+          image = value;
+        })
+      });
+      }
+    });
     _listener = FirebaseAuth.instance.authStateChanges().listen((event) {
       if (event == null) {
         Navigator.pushReplacementNamed(context, '/login');
@@ -132,17 +145,41 @@ class _HomePageState extends State<HomePage> {
                         );
                   }).then((value) => {
                     if (value != null) {
-                      ImagePicker().pickImage(source: value).then((file) => {
-                        file?.readAsBytes().then((bytes) => {
-                          setState(() {
-                            image = bytes;
+                      ImagePicker().pickImage(source: value).then((file) {
+                        ImageCropper().cropImage(
+                            sourcePath: file!.path,
+                            aspectRatioPresets: [
+                              CropAspectRatioPreset.square,
+                              CropAspectRatioPreset.ratio3x2,
+                              CropAspectRatioPreset.original,
+                              CropAspectRatioPreset.ratio4x3,
+                              CropAspectRatioPreset.ratio16x9
+                            ],
+                            uiSettings: [
+                              AndroidUiSettings(
+                                  toolbarTitle: 'Cropper',
+                                  toolbarColor: Colors.deepOrange,
+                                  toolbarWidgetColor: Colors.white,
+                                  initAspectRatio: CropAspectRatioPreset.original,
+                                  lockAspectRatio: false),
+                            ]
+                        ).then((value) => {
+                          value?.readAsBytes().then((bytes) => {
+                            FirebaseStorage.instance.ref('${FirebaseAuth.instance.currentUser?.uid}.jpeg').putData(bytes).then((p0) => {
+                              FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).update(
+                                  {'timestamp': FieldValue.serverTimestamp()})
+                            }),
                           })
-                        })
+                        });
+
                       })
                     }
                   });
                 },
-                  child: image == null ? Image.asset('assets/girl1.jpeg') : Image.memory(image!)),
+                  child: image == null ? Image.asset('assets/girl1.jpeg') : CircleAvatar(child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipOval(child: Image.memory(image!)),
+                  ), radius: 100,)),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
