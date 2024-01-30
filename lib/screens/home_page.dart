@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:ashdod_port_flutter/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../models/popup_menu_option.dart';
 
@@ -18,6 +21,7 @@ class _HomePageState extends State<HomePage> {
 
   late List<PopUpOption> timeOption;
   late StreamSubscription<User?> _listener;
+  Uint8List? image;
 
   Map<String, dynamic> presence = {};
 
@@ -84,7 +88,62 @@ class _HomePageState extends State<HomePage> {
       drawer: Drawer(
         child: Column(
           children: [
-            DrawerHeader(child: Image.asset('assets/girl1.jpeg'),),
+            DrawerHeader(child:
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet<ImageSource>(
+                    constraints: BoxConstraints(maxHeight: 300),
+                    useSafeArea: true,
+                      context: context,
+                      builder: (context) {
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 12.0, right: 12.0),
+                              child: Align(
+                                child: IconButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    icon: Icon(Icons.close)
+                                ),
+                                alignment: Alignment.topRight,
+                              ),
+                            ),
+                            Center(child: Padding(
+                              padding: const EdgeInsets.only(bottom: 18.0),
+                              child: Text('Add an Image'),
+                            )),
+                            ListTile(
+                              onTap: () {
+                                Navigator.pop(context, ImageSource.camera);
+                              },
+                              leading: Icon(Icons.camera_alt_outlined),
+                              title: Text('Take A Photo'),
+                            ),
+                            ListTile(
+                              onTap: () {
+                                Navigator.pop(context, ImageSource.gallery);
+                              },
+                              leading: Icon(Icons.photo_album_outlined),
+                              title: Text('Pick A Photo'),
+                            ),
+                          ],
+                        );
+                  }).then((value) => {
+                    if (value != null) {
+                      ImagePicker().pickImage(source: value).then((file) => {
+                        file?.readAsBytes().then((bytes) => {
+                          setState(() {
+                            image = bytes;
+                          })
+                        })
+                      })
+                    }
+                  });
+                },
+                  child: image == null ? Image.asset('assets/girl1.jpeg') : Image.memory(image!)),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListTile(

@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
       Column(
         children: [
           showWellCome(),
-          showLitleText(),
+          showLittleText(),
           Spacer(),
           AppTextField(
 
@@ -127,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  showLitleText() {
+  showLittleText() {
     return Flexible(
       child: FittedBox(
         fit: BoxFit.fitWidth,

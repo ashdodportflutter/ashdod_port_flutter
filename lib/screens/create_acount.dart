@@ -21,7 +21,7 @@ class _CreateAccountPageState extends State<CreateAccount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         actions: [],
       ),
@@ -62,27 +62,30 @@ class _CreateAccountPageState extends State<CreateAccount> {
                     setState(() {
                       isLoading = true;
                     });
-                    FirebaseAuth.instance.createUserWithEmailAndPassword(
-                        email: _emailTextController.text,
-                        password: _passwordTextController.text).then((value) => {
-                          if (value.user == null) {
-                            // error
-                          } else
-                            {
-                              setState(() {
-                                isLoading = false;
-                              }),
-                              Navigator.pushNamed(context, 'main_page')
-                            }
-                    });
+                    try {
+                      FirebaseAuth.instance.createUserWithEmailAndPassword(
+                          email: _emailTextController.text,
+                          password: _passwordTextController.text).then((
+                          value) =>
+                      {
+                        if (value.user == null) {
+                          // error
+                        } else
+                          {
+
+                            setState(() {
+                              isLoading = false;
+                            }),
+                            Navigator.pushNamed(context, 'main_page')
+                          }
+                      });
+                    } catch(e) {
+                      Navigator.pop(context);
+                    }
                   },
                   text: 'Sign Up',
                 ),
               ),
-
-
-
-
             ]),
           )
         ],
@@ -117,9 +120,14 @@ class _CreateAccountPageState extends State<CreateAccount> {
   }
 
   showWellCome() {
-    return Text(
-      'Create Account :)',
-      style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+    return Flexible(
+      child: FittedBox(
+        fit: BoxFit.cover,
+        child: Text(
+          'Create Account :)',
+          style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+        ),
+      ),
     );
   }
 

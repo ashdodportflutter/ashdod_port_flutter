@@ -1,6 +1,18 @@
 import 'package:ashdod_port_flutter/models/role_model.dart';
 import 'package:intl/intl.dart';
 
+  extension Split on String {
+    List<String> get splitToSubStrings {
+      var substrings = <String>[];
+      for (var i = 1; i <= length; i++) {
+        substrings.add(substring(0, i).toLowerCase());
+         substrings.add(substring(i - 1, i));
+      }
+
+      return substrings;
+    }
+  }
+
 extension MyDateFormat on DateTime {
   String birthDate() {
     return DateFormat('dd/MM/yyyy').format(this);
@@ -33,6 +45,7 @@ class AppUser {
   String? duty;
   DateTime? birthDate;
   RoleModel? role;
+  late List<String> splittedName;
 
   update(Map<String, dynamic> map) {
     name = map['name'];
@@ -44,6 +57,7 @@ class AppUser {
     if (map['role'] != null) {
       role = RoleModel(map: map['role']);
     }
+    splittedName = map['splittedName'].cast<String>();
   }
 
 

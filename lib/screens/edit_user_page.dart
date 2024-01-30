@@ -127,7 +127,8 @@ class _EditUserPageState extends State<EditUserPage> {
                       'name': _nameController.text,
                       'role': dropdownValue?.toJson,
                       'duty': _dutyController.text,
-                      'birthDate': currentDate.millisecondsSinceEpoch
+                      'birthDate': currentDate.millisecondsSinceEpoch,
+                      'splittedName': _nameController.text.splitToSubStrings
                     }
                 );
               },

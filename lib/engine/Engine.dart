@@ -18,8 +18,10 @@ class Engine {
   }
 
   Future<List<AppUser>?> fetchUsersByName(String query) async {
-    var users = await FirebaseFirestore.instance.collection('employees').where('searchName', arrayContains: query).get();
+    var users = await FirebaseFirestore.instance.collection('employees').where('splittedName', arrayContains: query.toLowerCase()).get();
     return users.docs.map((e) => AppUser.fromMap(e.data())).toList();
   }
+
+  // Future<bool> addUser()
 
 }
