@@ -1,4 +1,4 @@
-import 'package:ashdod_port_flutter/engine/Engine.dart';
+import 'package:ashdod_port_flutter/engine/engine.dart';
 import 'package:ashdod_port_flutter/engine/engine_interface.dart';
 import 'package:ashdod_port_flutter/engine/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,10 +14,11 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> implements Observer<bool> {
-  final _passwordTextController = TextEditingController(text: 'passw0rd');
+class _LoginPageState extends State<LoginPage> implements Observer {
+  final _passwordTextController = TextEditingController(text: 'Ntnhbhxu10');
   final _usernameTextController = TextEditingController(text: 'nissopa@gmail.com');
   var isLoading = false;
+  var _requests = <ARequest>[];
 
   @override
   void initState() {
@@ -72,7 +73,8 @@ class _LoginPageState extends State<LoginPage> implements Observer<bool> {
                       setState(() {
                         isLoading = true;
                       });
-                      Engine.instance.appLogin(LoginRequest(primary: _usernameTextController.text, secondary: _passwordTextController.text));
+                      _requests.add(LoginRequest(primary: _usernameTextController.text, secondary: _passwordTextController.text));
+                      Engine.instance.appLogin(_requests.last);
                       //Navigator.pushNamed(context, '/login');
                     },
                     text: 'Login',
@@ -171,18 +173,18 @@ class _LoginPageState extends State<LoginPage> implements Observer<bool> {
   }
 
   @override
-  Type get generic => User;
+  List<ARequest> get requests => _requests;
 
   @override
-  onNotify(AResult<bool> value) {
-    if (value.failure != null) {
+  onNotify(ARequest<dynamic> value) {
+    if (value.result?.failure != null) {
       print('Failed login');
     } else {
 
       setState(() {
         isLoading = false;
       });
-      Navigator.pushNamed(context, '/home_page');
+      Navigator.pushReplacementNamed(context, '/home_page');
     }
   }
 }

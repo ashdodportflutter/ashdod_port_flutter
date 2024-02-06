@@ -8,18 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class Engine implements Observable, BaseEngine {
   static final Engine _instance = Engine._();
   static Engine get instance => _instance;
-  Engine._() {
-    FirebaseAuth.instance
-        .authStateChanges()
-        .listen((User? user) {
-      if (user == null) {
-        // updateUser(UserRequest(primary: 'employees', secondary: user!.uid));
-        notifyObservers(AResult.success(success: true));
-      } else {
-        notifyObservers(AResult.error(failure: 'Failed'));
-      }
-    });
-  }
+  Engine._();
 
   final _observers = <Observer>[];
 
@@ -45,8 +34,8 @@ class Engine implements Observable, BaseEngine {
   }
 
   @override
-  notifyObservers<T>(AResult<T> value) {
-    _observers.where((element) => element.generic == value.runtimeType).forEach((element) { element.onNotify(value); });
+  notifyObservers<T>(ARequest<T> value) {
+    _observers.where((element) => element.requests.contains(value)).forEach((element) { element.onNotify(value); });
   }
 
   @override
@@ -64,22 +53,22 @@ class Engine implements Observable, BaseEngine {
   }
 
   @override
-  appLogin(ARequest loginData) {
-    FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: loginData.primary,
-        password: loginData.secondary);
-    // try {
-    //   FirebaseAuth.instance.signInWithEmailAndPassword(
-    //       email: loginData.primary,
-    //       password: loginData.secondary);
-    // } on FirebaseAuthException catch(e) {
-    //   notifyObservers(AResult.error(failure: e.code));
-    //   if (e.code == 'user-not-found') {
-    //     print('No user found for that email.');
-    //   } else if (e.code == 'wrong-password') {
-    //     print('Wrong password provided for that user.');
-    //   }
-    // }
+  appLogin(ARequest loginData) async {
+    try {
+      var credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: loginData.primary,
+          password: loginData.secondary);
+      loginData.result = AResult.success(success: credential.user!.uid);
+      notifyObservers(loginData);
+    } on FirebaseAuthException catch(e) {
+      loginData.result = AResult.error(failure: e.code);
+      notifyObservers(loginData);
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
   }
 
   @override

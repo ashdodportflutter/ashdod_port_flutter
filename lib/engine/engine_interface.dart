@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class ARequest<T> {
   Map<String, dynamic>? info;
+  int id = DateTime.now().microsecondsSinceEpoch;
   final String primary;
   final String secondary;
+  AResult<dynamic>? result;
   ARequest({required this.primary, required this.secondary});
 }
 
