@@ -3,7 +3,6 @@ import 'package:ashdod_port_flutter/screens/getting_started.dart';
 import 'package:ashdod_port_flutter/screens/home_page.dart';
 import 'package:ashdod_port_flutter/screens/login_page.dart';
 import 'package:ashdod_port_flutter/screens/edit_user_page.dart';
-import 'package:ashdod_port_flutter/screens/new_account.dart';
 import 'package:ashdod_port_flutter/screens/presnce_list_page.dart';
 import 'package:ashdod_port_flutter/screens/users_page.dart';
 import 'package:firebase_core/firebase_core.dart';

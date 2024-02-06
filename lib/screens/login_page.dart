@@ -1,5 +1,6 @@
-import 'package:ashdod_port_flutter/models/user.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ashdod_port_flutter/engine/Engine.dart';
+import 'package:ashdod_port_flutter/engine/engine_interface.dart';
+import 'package:ashdod_port_flutter/engine/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -13,10 +14,22 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> implements Observer<bool> {
   final _passwordTextController = TextEditingController(text: 'passw0rd');
   final _usernameTextController = TextEditingController(text: 'nissopa@gmail.com');
   var isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Engine.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    Engine.instance.removeObserver(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,29 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         isLoading = true;
                       });
-                      try {
-                        FirebaseAuth.instance.signInWithEmailAndPassword(
-                            email: _usernameTextController.text,
-                            password: _passwordTextController.text).then((
-                            value) {
-                          if (value.user != null) {
-                            FirebaseFirestore.instance.collection('employees').doc(value.user?.uid).get().then((value) => {
-                              AppUser.instance.update(value.data()!.cast<String, dynamic>())
-                            });
-                            setState(() {
-                              isLoading = false;
-                            });
-                            print(value.user?.email ?? 'no email');
-                            Navigator.pushNamed(context, '/home_page');
-                          }
-                        });
-                      } on FirebaseAuthException catch(e) {
-                        if (e.code == 'user-not-found') {
-                          print('No user found for that email.');
-                        } else if (e.code == 'wrong-password') {
-                          print('Wrong password provided for that user.');
-                        }
-                      }
+                      Engine.instance.appLogin(LoginRequest(primary: _usernameTextController.text, secondary: _passwordTextController.text));
                       //Navigator.pushNamed(context, '/login');
                     },
                     text: 'Login',
@@ -177,5 +168,21 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  @override
+  Type get generic => User;
+
+  @override
+  onNotify(AResult<bool> value) {
+    if (value.failure != null) {
+      print('Failed login');
+    } else {
+
+      setState(() {
+        isLoading = false;
+      });
+      Navigator.pushNamed(context, '/home_page');
+    }
   }
 }

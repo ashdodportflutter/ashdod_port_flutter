@@ -60,20 +60,20 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).snapshots().listen((event) {
-      if (event.data()?['timestamp'] != imageTimestamp) {
-        imageTimestamp = event.data()?['timestamp'];
-        FirebaseStorage.instance.ref('${FirebaseAuth.instance.currentUser?.uid}.jpeg').getData().then((value) => {
-        setState(() {
-          image = value;
-        })
-      });
-      }
-    });
     _listener = FirebaseAuth.instance.authStateChanges().listen((event) {
       if (event == null) {
         Navigator.pushReplacementNamed(context, '/login');
       } else {
+        FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).snapshots().listen((event) {
+          if (event.data()?['timestamp'] != imageTimestamp) {
+            imageTimestamp = event.data()?['timestamp'];
+            FirebaseStorage.instance.ref('${FirebaseAuth.instance.currentUser?.uid}.jpeg').getData().then((value) => {
+              setState(() {
+                image = value;
+              })
+            });
+          }
+        });
         var now = DateTime.now();
         FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').doc(now.dateKey()).get().then((value) {
           setState(() {
