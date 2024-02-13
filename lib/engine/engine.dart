@@ -1,16 +1,21 @@
 import 'package:ashdod_port_flutter/engine/engine_interface.dart';
-import 'package:ashdod_port_flutter/engine/observer.dart';
+import 'package:ashdod_port_flutter/engine/server.dart';
 import 'package:ashdod_port_flutter/models/role_model.dart';
 import 'package:ashdod_port_flutter/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:observers_manager/observer_data.dart';
+import 'package:observers_manager/observer_response.dart';
+import 'package:observers_manager/observers_manager.dart';
 
-class Engine implements Observable, BaseEngine {
+class Engine with ObserverManager {
   static final Engine _instance = Engine._();
   static Engine get instance => _instance;
   Engine._();
+  late Server server;
 
-  final _observers = <Observer>[];
+  initialize({ required Server server }) {
+    this.server = server;
+  }
 
   Future<List<RoleModel>> fetchRoles() async {
      var roles = await FirebaseFirestore.instance.collection('roles').orderBy('orderBy', descending: false).get();
@@ -27,65 +32,60 @@ class Engine implements Observable, BaseEngine {
     return users.docs.map((e) => AppUser.fromMap(e.data())).toList();
   }
 
-  //region Observable Interface
-  @override
-  addObserver<T>(Observer<T> observer) {
-    _observers.add(observer);
+  commitRequest<T>(ObserverData<T> data) {
+    switch (RequestType.values.byName(data.event)) {
+
+      case RequestType.login:
+        server.login(email: data.arg0, password: data.arg1).then((value) => {
+          notifyExtract(RequestType.login, value)
+        });
+        break;
+      case RequestType.register:
+        break;
+      case RequestType.resetPassword:
+        server.resetPassword(email: data.arg0).then((value) => {
+          notifyExtract(RequestType.resetPassword, value)
+        });
+        break;
+      case RequestType.fetchData:
+        break;
+      case RequestType.updateUser:
+        break;
+    }
   }
 
-  @override
-  notifyObservers<T>(ARequest<T> value) {
-    _observers.where((element) => element.requests.contains(value)).forEach((element) { element.onNotify(value); });
-  }
-
-  @override
-  removeObserver<T>(Observer<T> observer) {
-    _observers.remove(observer);
-  }
-  //endregion
-
-  //region BaseEngine Interface
-  @override
-  fetchData(ARequest request) {
-    FirebaseFirestore.instance.collection(request.primary).doc(request.secondary).get().then((value) {
+  fetchData(ObserverData request) {
+    FirebaseFirestore.instance.collection(request.arg0).doc(request.arg1).get().then((value) {
 
     });
   }
 
-  @override
-  appLogin(ARequest loginData) async {
-    try {
-      var credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: loginData.primary,
-          password: loginData.secondary);
-      loginData.result = AResult.success(success: credential.user!.uid);
-      notifyObservers(loginData);
-    } on FirebaseAuthException catch(e) {
-      loginData.result = AResult.error(failure: e.code);
-      notifyObservers(loginData);
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
+  notifyExtract<T>(RequestType type, Result result) {
+    if (result.failure != null) {
+      notifyObserver(ObserverResponse.error(event: type.name, failure: result.failure));
+    }  else {
+      notifyObserver(ObserverResponse.success(event: type.name, success: result.success));
     }
   }
+  
+  appLogin(ObserverData loginData) async {
 
-  @override
-  register(ARequest<dynamic> data) {
+  }
+
+
+  register(ObserverData<dynamic> data) {
     // TODO: implement register
     throw UnimplementedError();
   }
 
-  @override
-  resetPassword([ARequest<dynamic>? data]) {
+  resetPassword([ObserverData<dynamic>? data]) {
     // TODO: implement resetPassword
     throw UnimplementedError();
   }
 
-  @override
-  updateUser(ARequest request) {
-    FirebaseFirestore.instance.collection(request.primary).doc(request.secondary).get().then((value) {
+
+  updateUser(ObserverData request) {
+    FirebaseFirestore.instance.collection(request.arg0).doc(request.arg1).get().then((value) {
       AppUser.instance.update(value.data()!.cast<String, dynamic>());
     });
   }

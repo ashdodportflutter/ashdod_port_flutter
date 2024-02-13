@@ -1,8 +1,10 @@
 import 'package:ashdod_port_flutter/engine/engine.dart';
 import 'package:ashdod_port_flutter/engine/engine_interface.dart';
-import 'package:ashdod_port_flutter/engine/observer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:observers_manager/observer_data.dart';
+import 'package:observers_manager/observer_response.dart';
+import 'package:observers_manager/observers_manager.dart';
 
 import '../components/app_buttons.dart';
 import '../components/app_text_field.dart';
@@ -14,11 +16,10 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> implements Observer {
+class _LoginPageState extends State<LoginPage> with BaseObserver {
   final _passwordTextController = TextEditingController(text: 'Ntnhbhxu10');
   final _usernameTextController = TextEditingController(text: 'nissopa@gmail.com');
   var isLoading = false;
-  var _requests = <ARequest>[];
 
   @override
   void initState() {
@@ -73,19 +74,17 @@ class _LoginPageState extends State<LoginPage> implements Observer {
                       setState(() {
                         isLoading = true;
                       });
-                      _requests.add(LoginRequest(primary: _usernameTextController.text, secondary: _passwordTextController.text));
-                      Engine.instance.appLogin(_requests.last);
-                      //Navigator.pushNamed(context, '/login');
+                      Engine.instance.commitRequest(addTopic(ObserverData.withArgs(event: RequestType.login.name, arg0: _usernameTextController.text, arg1: _passwordTextController.text)));
                     },
                     text: 'Login',
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.only(top: 10),
                     child: InkWell(
                       child: Text("forget Password"),
                       onTap: () {
                         notifyResetPassword();
-                        FirebaseAuth.instance.sendPasswordResetEmail(email: _usernameTextController.text);
+                        Engine.instance.commitRequest(addTopic(ObserverData.withArgs(event: RequestType.resetPassword.name, arg0: _usernameTextController.text)));
                         print("forget Password");
                         },
                     ),
@@ -173,11 +172,9 @@ class _LoginPageState extends State<LoginPage> implements Observer {
   }
 
   @override
-  List<ARequest> get requests => _requests;
-
-  @override
-  onNotify(ARequest<dynamic> value) {
-    if (value.result?.failure != null) {
+  onNotify<T>(ObserverResponse<T> value) {
+    super.onNotify(value);
+    if (value.failure != null) {
       print('Failed login');
     } else {
 

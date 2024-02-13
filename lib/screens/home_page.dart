@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:ashdod_port_flutter/engine/engine.dart';
+import 'package:ashdod_port_flutter/engine/firebase_handler.dart';
 import 'package:ashdod_port_flutter/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,7 +26,6 @@ class _HomePageState extends State<HomePage> {
   late StreamSubscription<User?> _listener;
   Uint8List? image;
   Timestamp? imageTimestamp;
-
   Map<String, dynamic> presence = {};
 
   stamp(String key, int index) {
@@ -60,6 +60,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    Engine.instance.initialize(server: FirebaseHandler());
     _listener = FirebaseAuth.instance.authStateChanges().listen((event) {
       if (event == null) {
         Navigator.pushReplacementNamed(context, '/login');
