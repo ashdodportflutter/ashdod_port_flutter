@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:ashdod_port_flutter/engine/engine.dart';
-import 'package:ashdod_port_flutter/engine/firebase_handler.dart';
+import 'package:ashdod_port_flutter/engine/servers/firebase_handler.dart';
+import 'package:ashdod_port_flutter/engine/servers/server_factory.dart';
+import 'package:ashdod_port_flutter/engine/servers/server_simulation.dart';
 import 'package:ashdod_port_flutter/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -60,7 +62,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    Engine.instance.initialize(server: FirebaseHandler());
+    Engine.instance.initialize(server: ServerFactory.createServer(ServerType.firebase));
     _listener = FirebaseAuth.instance.authStateChanges().listen((event) {
       if (event == null) {
         Navigator.pushReplacementNamed(context, '/login');

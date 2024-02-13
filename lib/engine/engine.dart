@@ -1,5 +1,5 @@
 import 'package:ashdod_port_flutter/engine/engine_interface.dart';
-import 'package:ashdod_port_flutter/engine/server.dart';
+import 'package:ashdod_port_flutter/engine/servers/server.dart';
 import 'package:ashdod_port_flutter/models/role_model.dart';
 import 'package:ashdod_port_flutter/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -48,15 +48,16 @@ class Engine with ObserverManager {
         });
         break;
       case RequestType.fetchData:
+        fetchData(data.arg0);
         break;
       case RequestType.updateUser:
         break;
     }
   }
 
-  fetchData(ObserverData request) {
-    FirebaseFirestore.instance.collection(request.arg0).doc(request.arg1).get().then((value) {
-
+  fetchData(Request request) {
+    server.fetchData(request: request).then((value) => {
+      notifyExtract(RequestType.fetchData, value)
     });
   }
 
@@ -64,7 +65,7 @@ class Engine with ObserverManager {
     if (result.failure != null) {
       notifyObserver(ObserverResponse.error(event: type.name, failure: result.failure));
     }  else {
-      notifyObserver(ObserverResponse.success(event: type.name, success: result.success));
+      notifyObserver(ObserverResponse.success(dataType: result.type, event: type.name, success: result.success));
     }
   }
   

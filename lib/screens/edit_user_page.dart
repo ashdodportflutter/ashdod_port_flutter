@@ -1,10 +1,16 @@
 import 'dart:async';
 
+import 'package:ashdod_port_flutter/engine/engine.dart';
+import 'package:ashdod_port_flutter/engine/engine_interface.dart';
+import 'package:ashdod_port_flutter/engine/servers/server.dart';
 import 'package:ashdod_port_flutter/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:observers_manager/observer_data.dart';
+import 'package:observers_manager/observer_response.dart';
+import 'package:observers_manager/observers_manager.dart';
 
 import '../components/app_buttons.dart';
 import '../components/app_text_field.dart';
@@ -17,7 +23,7 @@ class EditUserPage extends StatefulWidget {
   State<EditUserPage> createState() => _EditUserPageState();
 }
 
-class _EditUserPageState extends State<EditUserPage> {
+class _EditUserPageState extends State<EditUserPage> with BaseObserver {
   final _nameController = TextEditingController();
   final _dutyController = TextEditingController();
   final dateinput = TextEditingController();
@@ -28,22 +34,30 @@ class _EditUserPageState extends State<EditUserPage> {
   @override
   void initState() {
     super.initState();
+    Engine.instance.addObserver(this);
     _nameController.text = AppUser.instance.name ?? '';
     _dutyController.text = AppUser.instance.duty ?? '';
     currentDate = AppUser.instance.birthDate ?? DateTime.now();
     dateinput.text = currentDate.birthDate();
-    FirebaseFirestore.instance
-        .collection('roles')
-        .orderBy('orderBy', descending: false)
-        .get().then((event) {
-      setState(() {
-        roles = event.docs
-            .map((e) => RoleModel(map: e.data().cast<String, dynamic>()))
-            .toList();
-        dropdownValue = roles?.firstWhere((element) => element.id == dropdownValue?.id);
-        // dropdownValue = AppUser.instance.role ?? roles?.first;
-      });
-    });
+    Engine.instance.commitRequest(addTopic(ObserverData.withArgs(event: RequestType.fetchData.name, arg0: Request(name: 'fetchRoles'))));
+    // FirebaseFirestore.instance
+    //     .collection('roles')
+    //     .orderBy('orderBy', descending: false)
+    //     .get().then((event) {
+    //   setState(() {
+    //     roles = event.docs
+    //         .map((e) => RoleModel(map: e.data().cast<String, dynamic>()))
+    //         .toList();
+    //     dropdownValue = roles?.firstWhere((element) => element.id == dropdownValue?.id);
+    //     // dropdownValue = AppUser.instance.role ?? roles?.first;
+    //   });
+    // });
+  }
+
+  @override
+  void dispose() {
+    Engine.instance.removeObserver(this);
+    super.dispose();
   }
 
   Widget getDate() {
@@ -136,5 +150,20 @@ class _EditUserPageState extends State<EditUserPage> {
         ],
       ),
     );
+  }
+
+  @override
+  onNotify<T>(ObserverResponse<T> data) {
+    super.onNotify(data);
+    switch (data.dataType) {
+      case 'fetchRoles':
+        setState(() {
+          roles = data.success as List<RoleModel>?;
+          dropdownValue = roles?.firstWhere((element) => element.id == dropdownValue?.id);
+          // dropdownValue = AppUser.instance.role ?? roles?.first;
+        });
+        break;
+    }
+
   }
 }

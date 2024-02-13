@@ -174,13 +174,28 @@ class _LoginPageState extends State<LoginPage> with BaseObserver {
   @override
   onNotify<T>(ObserverResponse<T> value) {
     super.onNotify(value);
+    setState(() {
+      isLoading = false;
+    });
     if (value.failure != null) {
-      print('Failed login');
-    } else {
-
-      setState(() {
-        isLoading = false;
+      showDialog(context: context, builder: (context) {
+        return AlertDialog(
+          title: Text(value.failure?.title ?? ''),
+          content: Text(value.failure?.message ?? ''),
+          actions: [
+            ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Engine.instance.commitRequest(addTopic(ObserverData.withArgs(event: RequestType.login.name, arg0: _usernameTextController.text, arg1: _passwordTextController.text)));
+            },
+        child: Text(value.failure?.actions.first ?? '')),
+            ElevatedButton(onPressed: () {
+              Navigator.pop(context);
+        }, child: Text(value.failure?.actions.last ?? ''))
+          ],
+        );
       });
+    } else {
       Navigator.pushReplacementNamed(context, '/home_page');
     }
   }
