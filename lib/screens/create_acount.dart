@@ -1,3 +1,6 @@
+import 'package:ashdod_port_flutter/screens/base_page.dart';
+import 'package:ashdod_port_flutter/view_model/create_account_view_model.dart';
+import 'package:ashdod_port_flutter/view_model/view_model_base.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -6,30 +9,20 @@ import '../components/app_text_field.dart';
 
 
 
-class CreateAccount extends StatefulWidget {
-  const CreateAccount({super.key});
+class CreateAccount extends BasePage<CreateViewModel> {
+  const CreateAccount({super.key, required super.viewModel});
 
   @override
-  State<CreateAccount> createState() => _CreateAccountPageState();
+  BasePageState<CreateAccount, BaseModel> createState() => _CreateAccountPageState();
 }
 
-class _CreateAccountPageState extends State<CreateAccount> {
+class _CreateAccountPageState extends BasePageState<CreateAccount, BaseModel> {
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
   bool isLoading = false;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        actions: [],
-      ),
-      body: getBody(),
-    );
-  }
 
-  getBody() {
+  Widget get body {
     return Stack(
         children: [
       Align(
@@ -62,26 +55,7 @@ class _CreateAccountPageState extends State<CreateAccount> {
                     setState(() {
                       isLoading = true;
                     });
-                    try {
-                      FirebaseAuth.instance.createUserWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text).then((
-                          value) =>
-                      {
-                        if (value.user == null) {
-                          // error
-                        } else
-                          {
-
-                            setState(() {
-                              isLoading = false;
-                            }),
-                            Navigator.pushNamed(context, 'main_page')
-                          }
-                      });
-                    } catch(e) {
-                      Navigator.pop(context);
-                    }
+                    widget.viewModel.createAccount(email: _emailTextController.text, password: _passwordTextController.text);
                   },
                   text: 'Sign Up',
                 ),
@@ -89,34 +63,8 @@ class _CreateAccountPageState extends State<CreateAccount> {
             ]),
           )
         ],
-      ),
-      getLoader(isLoading)
+      )
     ]);
-  }
-
-  Widget getLoader(misloading) {
-    return Visibility(
-      visible: misloading,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        color: Colors.black45,
-        child: const Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            CircularProgressIndicator(),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              'Loading...',
-              style: TextStyle(color: Colors.white, fontSize: 30),
-            )
-          ],
-        ),
-      ),
-    );
   }
 
   showWellCome() {
@@ -132,4 +80,11 @@ class _CreateAccountPageState extends State<CreateAccount> {
   }
 
 
+  @override
+  onNotify([BaseModel? data]) {
+    super.onNotify(data);
+    if (data != null) {
+      Navigator.pushReplacementNamed(context, '/home_page');
+    }
+  }
 }

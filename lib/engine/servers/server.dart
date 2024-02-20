@@ -18,7 +18,7 @@ class Request<T> {
 }
 
 abstract class Auth {
-
+  Future<Result<String>> createAccount({required String email, required String password});
   Future<Result<String>> login({required String email, required String password});
   Future<Result<bool>> resetPassword({required String email});
 }

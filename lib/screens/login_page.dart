@@ -10,7 +10,7 @@ class LoginPage extends BasePage<LoginViewModel> {
   const LoginPage({super.key, required super.viewModel});
 
   @override
-  State<BasePage<LoginViewModel>> createState() {
+  BasePageState<BasePage<LoginViewModel>, BaseModel> createState() {
     return _LoginPageState();
   }
 }
@@ -128,36 +128,4 @@ class _LoginPageState extends BasePageState<LoginPage, BaseModel> {
       notifyResetPassword();
     }
   }
-
-  // @override
-  // onNotify(BaseModel data) {
-  //   // setState(() {
-  //   //
-  //   // });
-  // //   super.onNotify(value);
-  // //   setState(() {
-  // //     isLoading = false;
-  // //   });
-  // //   if (value.failure != null) {
-  // //     showDialog(context: context, builder: (context) {
-  // //       return AlertDialog(
-  // //         title: Text(value.failure?.title ?? ''),
-  // //         content: Text(value.failure?.message ?? ''),
-  // //         actions: [
-  // //           ElevatedButton(
-  // //               onPressed: () {
-  // //                 Navigator.pop(context);
-  // //                 // Engine.instance.commitRequest(addTopic(ObserverData.withArgs(event: RequestType.login.name, arg0: _usernameTextController.text, arg1: _passwordTextController.text)));
-  // //               },
-  // //               child: Text(value.failure?.actions.first ?? '')),
-  // //           ElevatedButton(onPressed: () {
-  // //             Navigator.pop(context);
-  // //           }, child: Text(value.failure?.actions.last ?? ''))
-  // //         ],
-  // //       );
-  // //     });
-  // //   } else {
-  // //     Navigator.pushReplacementNamed(context, '/home_page');
-  // //   }
-  // }
 }

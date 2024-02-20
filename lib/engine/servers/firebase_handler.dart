@@ -73,6 +73,23 @@ class FBAuth implements Auth {
     }
   }
 
+  @override
+  Future<Result<String>> createAccount({required String email, required String password}) async {
+    try {
+      var value = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password);
+      if (value.user == null) {
+        return Result.error(failure: ErrorModel(title: 'Account Error', message: 'Failed to create an account', actions: ['OK']));
+      } else
+      {
+        return Result.success(success: value.user?.uid);
+      }
+    } on FirebaseAuthException catch(e) {
+      return Result.error(failure: ErrorModel(title: 'Account Error', message: e.code, actions: ['OK']));
+    }
+  }
+
 }
 
 class FirebaseHandler implements Server {
