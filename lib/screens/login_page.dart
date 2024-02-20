@@ -1,7 +1,7 @@
-import 'package:ashdod_port_flutter/screens/base_page.dart';
+import 'package:ashdod_port_flutter/view_model/app_view_model.dart';
 import 'package:ashdod_port_flutter/view_model/login_view_model.dart';
-import 'package:ashdod_port_flutter/view_model/view_model_base.dart';
 import 'package:flutter/material.dart';
+import 'package:observers_manager/base_page.dart';
 
 import '../components/app_buttons.dart';
 import '../components/app_text_field.dart';
@@ -10,12 +10,12 @@ class LoginPage extends BasePage<LoginViewModel> {
   const LoginPage({super.key, required super.viewModel});
 
   @override
-  BasePageState<BasePage<LoginViewModel>, BaseModel> createState() {
+  BasePageState<BasePage<LoginViewModel>, AppBaseModel> createState() {
     return _LoginPageState();
   }
 }
 
-class _LoginPageState extends BasePageState<LoginPage, BaseModel> {
+class _LoginPageState extends BasePageState<LoginPage, AppBaseModel> {
   final _passwordTextController = TextEditingController(text: 'Ntnhbhxu10');
   final _usernameTextController = TextEditingController(text: 'nissopa@gmail.com');
 
@@ -120,7 +120,7 @@ class _LoginPageState extends BasePageState<LoginPage, BaseModel> {
   }
 
   @override
-  onNotify([BaseModel? data]) {
+  onNotify([AppBaseModel? data]) {
     super.onNotify(data);
     if (data?.nextPage != null) {
       Navigator.pushReplacementNamed(context, data?.nextPage ?? '');

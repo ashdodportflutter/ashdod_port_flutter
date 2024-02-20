@@ -5,10 +5,10 @@ import 'package:ashdod_port_flutter/screens/login_page.dart';
 import 'package:ashdod_port_flutter/screens/edit_user_page.dart';
 import 'package:ashdod_port_flutter/screens/presnce_list_page.dart';
 import 'package:ashdod_port_flutter/screens/users_page.dart';
+import 'package:ashdod_port_flutter/view_model/app_view_model.dart';
 import 'package:ashdod_port_flutter/view_model/create_account_view_model.dart';
 import 'package:ashdod_port_flutter/view_model/edit_user_view_model.dart';
 import 'package:ashdod_port_flutter/view_model/login_view_model.dart';
-import 'package:ashdod_port_flutter/view_model/view_model_base.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -32,8 +32,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       routes: <String, WidgetBuilder> {
         '/getReady': (BuildContext context) => const GetReadyPage(),
-        '/login': (BuildContext context) => LoginPage(viewModel: LoginViewModel(model: BaseModel(false)),),
-        '/create_account': (BuildContext context) => CreateAccount(viewModel: CreateViewModel(model: BaseModel(false)),),
+        '/login': (BuildContext context) => LoginPage(viewModel: LoginViewModel(model: AppBaseModel(false)),),
+        '/create_account': (BuildContext context) => CreateAccount(viewModel: CreateViewModel(model: AppBaseModel(false)),),
         '/edit_user_page': (BuildContext context) => EditUserPage(viewModel: EditUserViewModel(model: EditUserModel(false)),),
         '/home_page': (BuildContext contex) => HomePage(),
         '/list': (BuildContext contex) => PresenceListPage(),

@@ -1,14 +1,14 @@
 import 'package:ashdod_port_flutter/models/role_model.dart';
-import 'package:ashdod_port_flutter/view_model/view_model_base.dart';
+import 'package:ashdod_port_flutter/view_model/app_view_model.dart';
 
-class EditUserModel extends BaseModel {
+class EditUserModel extends AppBaseModel {
   List<RoleModel>? roles;
   RoleModel? selectedRole;
 
   EditUserModel(super.isLoading);
 }
 
-class EditUserViewModel extends ViewModelBase<EditUserModel> {
+class EditUserViewModel extends AppViewModel<EditUserModel> {
   EditUserViewModel({required super.model});
 
   fetchRoles() {
