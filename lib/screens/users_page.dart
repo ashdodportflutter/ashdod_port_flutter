@@ -78,8 +78,8 @@ class _UsersPageState extends State<UsersPage> {
   @override
   void initState() {
     super.initState();
-    Engine.instance.fetchRoles().then((value) => {
-      roles = value
+    Engine.instance.server.fetcher.fetchRoles().then((value) => {
+      roles = value.success
     });
   }
 }

@@ -1,3 +1,4 @@
+import 'package:ashdod_port_flutter/models/role_model.dart';
 import 'package:observers_manager/observer_response.dart';
 
 class Result<T> {
@@ -16,8 +17,18 @@ class Request<T> {
   Request({required this.name, this.info});
 }
 
-abstract class Server {
+abstract class Auth {
+
   Future<Result<String>> login({required String email, required String password});
   Future<Result<bool>> resetPassword({required String email});
-  Future<Result> fetchData<T>({required Request<T> request});
+}
+
+abstract class DataFetcher {
+  Future<Result<List<RoleModel>>> fetchRoles();
+  Future<Result<bool>> updateUser(Map<String, dynamic> data);
+}
+
+abstract class Server {
+  Auth get authenticator;
+  DataFetcher get fetcher;
 }

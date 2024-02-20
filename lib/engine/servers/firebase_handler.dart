@@ -3,6 +3,7 @@ import 'package:ashdod_port_flutter/engine/servers/server.dart';
 import 'package:ashdod_port_flutter/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:observers_manager/observer_response.dart';
 
 import '../../models/day_model.dart';
 import '../../models/role_model.dart';
@@ -26,7 +27,25 @@ extension ExtractRequest on String {
   }
 }
 
-class FirebaseHandler implements Server {
+class FBDataFetcher extends DataFetcher {
+  @override
+  Future<Result<List<RoleModel>>> fetchRoles() async {
+    var roles = await FirebaseFirestore.instance.collection('roles').orderBy('orderBy', descending: false).get();
+    if (roles.docs.isEmpty) {
+      return Result.error(failure: ErrorModel(title: 'Error', message: 'Failed to fetch roles', actions: ['OK']));
+    }
+    return Result.success(success: roles.docs.map((e) => RoleModel(map: e.data().cast<String, dynamic>())).toList());
+  }
+
+  @override
+  Future<Result<bool>> updateUser(Map<String, dynamic> data) async {
+    await FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).set(data);
+    return Result.success(success: true);
+  }
+
+}
+
+class FBAuth implements Auth {
   @override
   Future<Result<String>> login({required String email, required String password}) async {
     try {
@@ -54,9 +73,14 @@ class FirebaseHandler implements Server {
     }
   }
 
+}
+
+class FirebaseHandler implements Server {
+
   @override
-  Future<Result> fetchData<T>({required Request<T> request}) async {
-    return request.name.performRequest();
-  }
+  Auth get authenticator => FBAuth();
+
+  @override
+  DataFetcher get fetcher => FBDataFetcher();
 
 }

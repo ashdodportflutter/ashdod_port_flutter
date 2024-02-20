@@ -1,50 +1,25 @@
-import 'package:ashdod_port_flutter/engine/engine.dart';
-import 'package:ashdod_port_flutter/engine/engine_interface.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ashdod_port_flutter/screens/base_page.dart';
+import 'package:ashdod_port_flutter/view_model/login_view_model.dart';
+import 'package:ashdod_port_flutter/view_model/view_model_base.dart';
 import 'package:flutter/material.dart';
-import 'package:observers_manager/observer_data.dart';
-import 'package:observers_manager/observer_response.dart';
-import 'package:observers_manager/observers_manager.dart';
 
 import '../components/app_buttons.dart';
 import '../components/app_text_field.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginPage extends BasePage<LoginViewModel> {
+  const LoginPage({super.key, required super.viewModel});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<BasePage<LoginViewModel>> createState() {
+    return _LoginPageState();
+  }
 }
 
-class _LoginPageState extends State<LoginPage> with BaseObserver {
+class _LoginPageState extends BasePageState<LoginPage, BaseModel> {
   final _passwordTextController = TextEditingController(text: 'Ntnhbhxu10');
   final _usernameTextController = TextEditingController(text: 'nissopa@gmail.com');
-  var isLoading = false;
 
-  @override
-  void initState() {
-    super.initState();
-    Engine.instance.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    Engine.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        actions: [],
-      ),
-      body: getBody(),
-    );
-  }
-
-  getBody() {
+  Widget get body {
     return Stack(children: [
       Align(
           alignment: Alignment.bottomLeft,
@@ -71,10 +46,7 @@ class _LoginPageState extends State<LoginPage> with BaseObserver {
                 child: Column(children: [
                   LoginButton(
                     onPressed: () {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      Engine.instance.commitRequest(addTopic(ObserverData.withArgs(event: RequestType.login.name, arg0: _usernameTextController.text, arg1: _passwordTextController.text)));
+                      widget.viewModel.login(email: _usernameTextController.text, password: _passwordTextController.text);
                     },
                     text: 'Login',
                   ),
@@ -84,9 +56,9 @@ class _LoginPageState extends State<LoginPage> with BaseObserver {
                       child: Text("forget Password"),
                       onTap: () {
                         notifyResetPassword();
-                        Engine.instance.commitRequest(addTopic(ObserverData.withArgs(event: RequestType.resetPassword.name, arg0: _usernameTextController.text)));
+                        // Engine.instance.commitRequest(addTopic(ObserverData.withArgs(event: RequestType.resetPassword.name, arg0: _usernameTextController.text)));
                         print("forget Password");
-                        },
+                      },
                     ),
                   ), Padding(
                     padding: EdgeInsets.only(bottom: 10),
@@ -97,15 +69,16 @@ class _LoginPageState extends State<LoginPage> with BaseObserver {
                       },
                     ),
                   )
-    ,
+                  ,
 
                 ]),
               ))
         ],
       ),
-      getLoader(isLoading)
     ]);
   }
+
+
 
   showWellCome() {
     return Flexible(
@@ -146,57 +119,45 @@ class _LoginPageState extends State<LoginPage> with BaseObserver {
     });
   }
 
-  Widget getLoader(misloading) {
-    return Visibility(
-      visible: misloading,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        color: Colors.black45,
-        child: const Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            CircularProgressIndicator(),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              'Loading...',
-              style: TextStyle(color: Colors.white, fontSize: 30),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
-  onNotify<T>(ObserverResponse<T> value) {
-    super.onNotify(value);
-    setState(() {
-      isLoading = false;
-    });
-    if (value.failure != null) {
-      showDialog(context: context, builder: (context) {
-        return AlertDialog(
-          title: Text(value.failure?.title ?? ''),
-          content: Text(value.failure?.message ?? ''),
-          actions: [
-            ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Engine.instance.commitRequest(addTopic(ObserverData.withArgs(event: RequestType.login.name, arg0: _usernameTextController.text, arg1: _passwordTextController.text)));
-            },
-        child: Text(value.failure?.actions.first ?? '')),
-            ElevatedButton(onPressed: () {
-              Navigator.pop(context);
-        }, child: Text(value.failure?.actions.last ?? ''))
-          ],
-        );
-      });
+  onNotify([BaseModel? data]) {
+    super.onNotify(data);
+    if (data?.nextPage != null) {
+      Navigator.pushReplacementNamed(context, data?.nextPage ?? '');
     } else {
-      Navigator.pushReplacementNamed(context, '/home_page');
+      notifyResetPassword();
     }
   }
+
+  // @override
+  // onNotify(BaseModel data) {
+  //   // setState(() {
+  //   //
+  //   // });
+  // //   super.onNotify(value);
+  // //   setState(() {
+  // //     isLoading = false;
+  // //   });
+  // //   if (value.failure != null) {
+  // //     showDialog(context: context, builder: (context) {
+  // //       return AlertDialog(
+  // //         title: Text(value.failure?.title ?? ''),
+  // //         content: Text(value.failure?.message ?? ''),
+  // //         actions: [
+  // //           ElevatedButton(
+  // //               onPressed: () {
+  // //                 Navigator.pop(context);
+  // //                 // Engine.instance.commitRequest(addTopic(ObserverData.withArgs(event: RequestType.login.name, arg0: _usernameTextController.text, arg1: _passwordTextController.text)));
+  // //               },
+  // //               child: Text(value.failure?.actions.first ?? '')),
+  // //           ElevatedButton(onPressed: () {
+  // //             Navigator.pop(context);
+  // //           }, child: Text(value.failure?.actions.last ?? ''))
+  // //         ],
+  // //       );
+  // //     });
+  // //   } else {
+  // //     Navigator.pushReplacementNamed(context, '/home_page');
+  // //   }
+  // }
 }

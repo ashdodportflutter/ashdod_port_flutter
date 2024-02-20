@@ -57,7 +57,9 @@ class AppUser {
     if (map['role'] != null) {
       role = RoleModel(map: map['role']);
     }
-    splittedName = map['splittedName'].cast<String>();
+    if (map['splittedName'] != null) {
+      splittedName = map['splittedName'].cast<String>();
+    }
   }
 
 
