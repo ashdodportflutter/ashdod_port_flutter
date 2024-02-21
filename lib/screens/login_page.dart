@@ -6,16 +6,18 @@ import 'package:flutter/material.dart';
 import '../components/app_buttons.dart';
 import '../components/app_text_field.dart';
 
-class LoginPage extends BasePage<LoginViewModel> {
-  const LoginPage({super.key, required super.viewModel});
+class LoginPage extends AppBasePage<AppBaseModel, LoginViewModel> {
+  LoginPage({required super.viewModel});
+
+
 
   @override
-  BasePageState<BasePage<LoginViewModel>, BaseModel> createState() {
+  AppBasePageState<AppBaseModel, LoginViewModel, LoginPage> createState() {
     return _LoginPageState();
   }
 }
 
-class _LoginPageState extends BasePageState<LoginPage, BaseModel> {
+class _LoginPageState extends AppBasePageState<AppBaseModel, LoginViewModel, LoginPage> {
   final _passwordTextController = TextEditingController(text: 'Ntnhbhxu10');
   final _usernameTextController = TextEditingController(text: 'nissopa@gmail.com');
 
@@ -120,7 +122,7 @@ class _LoginPageState extends BasePageState<LoginPage, BaseModel> {
   }
 
   @override
-  onNotify([BaseModel? data]) {
+  onNotify([AppBaseModel? data]) {
     super.onNotify(data);
     if (data?.nextPage != null) {
       Navigator.pushReplacementNamed(context, data?.nextPage ?? '');

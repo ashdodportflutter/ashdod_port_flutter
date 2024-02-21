@@ -32,9 +32,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       routes: <String, WidgetBuilder> {
         '/getReady': (BuildContext context) => const GetReadyPage(),
-        '/login': (BuildContext context) => LoginPage(viewModel: LoginViewModel(model: BaseModel(false)),),
-        '/create_account': (BuildContext context) => CreateAccount(viewModel: CreateViewModel(model: BaseModel(false)),),
-        '/edit_user_page': (BuildContext context) => EditUserPage(viewModel: EditUserViewModel(model: EditUserModel(false)),),
+        '/login': (BuildContext context) => LoginPage(viewModel: LoginViewModel(model: AppBaseModel()),),
+        '/create_account': (BuildContext context) => CreateAccount(viewModel: CreateViewModel(model: AppBaseModel()),),
+        '/edit_user_page': (BuildContext context) => EditUserPage(viewModel: EditUserViewModel(model: EditUserModel()),),
         '/home_page': (BuildContext contex) => HomePage(),
         '/list': (BuildContext contex) => PresenceListPage(),
         '/users': (BuildContext contex) => UsersPage()

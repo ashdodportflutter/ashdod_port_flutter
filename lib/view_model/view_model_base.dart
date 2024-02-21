@@ -1,18 +1,17 @@
-import 'package:ashdod_port_flutter/engine/engine.dart';
-import 'package:ashdod_port_flutter/models/user.dart';
-import 'package:observers_manager/observers_manager.dart';
 
-class BaseModel {
+
+import 'package:observers_manager/view_model_base.dart';
+
+import '../engine/engine.dart';
+import '../models/user.dart';
+
+class AppBaseModel extends BaseModel {
   AppUser? user;
-  var isLoading = false;
-  String? nextPage;
-  BaseModel(this.isLoading, {this.user});
 }
 
-class ViewModelBase<T extends BaseModel> with ObserverManager<T> {
-  final T model;
+class AppViewModel<T extends BaseModel> extends ViewModelBase<T> {
+
   var engine = Engine.instance;
 
-  ViewModelBase({required this.model});
-
+  AppViewModel({required super.model});
 }

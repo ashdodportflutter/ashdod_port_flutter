@@ -7,16 +7,18 @@ import '../components/app_buttons.dart';
 import '../components/app_text_field.dart';
 import '../models/role_model.dart';
 
-class EditUserPage extends BasePage<EditUserViewModel> {
-  const EditUserPage({super.key, required super.viewModel});
+class EditUserPage extends AppBasePage<EditUserModel, EditUserViewModel> {
+  EditUserPage({required super.viewModel});
+
+
 
   @override
-  State<BasePage<EditUserViewModel>> createState() {
+  AppBasePageState<EditUserModel, EditUserViewModel, EditUserPage> createState() {
     return _EditUserPageState();
   }
 }
 
-class _EditUserPageState extends BasePageState<EditUserPage, EditUserModel>  {
+class _EditUserPageState extends AppBasePageState<EditUserModel, EditUserViewModel, EditUserPage>  {
   final _nameController = TextEditingController();
   final _dutyController = TextEditingController();
   final dateinput = TextEditingController();

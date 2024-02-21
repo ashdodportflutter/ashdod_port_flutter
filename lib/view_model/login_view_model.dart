@@ -1,9 +1,9 @@
-import 'package:ashdod_port_flutter/models/user.dart';
 import 'package:ashdod_port_flutter/view_model/view_model_base.dart';
+import 'package:observers_manager/view_model_base.dart';
 
 
 
-class LoginViewModel extends ViewModelBase<BaseModel> {
+class LoginViewModel extends AppViewModel<AppBaseModel> {
   LoginViewModel({required super.model});
 
   login({required String email, required String password}) {
