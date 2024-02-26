@@ -1,4 +1,4 @@
-import 'package:ashdod_port_flutter/models/user.dart';
+import 'package:ashdod_port_flutter/engine/servers/extensions.dart';
 
 class DayModel {
   String? day;

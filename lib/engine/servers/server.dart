@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:ashdod_port_flutter/models/role_model.dart';
 import 'package:observers_manager/observer_response.dart';
 
@@ -18,6 +20,7 @@ class Request<T> {
 }
 
 abstract class Auth {
+  Function(bool)? onAuthState;
   Future<Result<String>> createAccount({required String email, required String password});
   Future<Result<String>> login({required String email, required String password});
   Future<Result<bool>> resetPassword({required String email});
@@ -26,6 +29,13 @@ abstract class Auth {
 abstract class DataFetcher {
   Future<Result<List<RoleModel>>> fetchRoles();
   Future<Result<bool>> updateUser(Map<String, dynamic> data);
+  Future updateTime(Map<String, dynamic> data);
+  imageTimeStamp(String path);
+  Function(DateTime)? onImageTimeStamp;
+}
+
+abstract class Storage {
+  Function(Uint8List?)? onImageUpdate;
 }
 
 abstract class Server {
