@@ -11,7 +11,7 @@ class AppBasePage<T extends AppBaseModel, VM extends AppViewModel<T>> extends Ba
 
 
   @override
-  State<AppBasePage<T, VM>> createState() => AppBasePageState();
+  AppBasePageState<T, VM, AppBasePage<T, VM>> createState() => AppBasePageState();
 }
 
 class AppBasePageState<M extends AppBaseModel, VM extends AppViewModel<M>, T extends AppBasePage<M, VM>> extends BasePageState<M, VM, T> {
