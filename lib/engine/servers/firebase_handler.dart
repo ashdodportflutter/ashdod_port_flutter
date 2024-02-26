@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ashdod_port_flutter/engine/servers/extensions.dart';
 import 'package:ashdod_port_flutter/engine/servers/server.dart';
 import 'package:ashdod_port_flutter/models/user.dart';
@@ -28,6 +30,7 @@ extension ExtractRequest on String {
 }
 
 class FBDataFetcher extends DataFetcher {
+
   @override
   Future<Result<List<RoleModel>>> fetchRoles() async {
     var roles = await FirebaseFirestore.instance.collection('roles').orderBy('orderBy', descending: false).get();
@@ -43,9 +46,38 @@ class FBDataFetcher extends DataFetcher {
     return Result.success(success: true);
   }
 
+  @override
+  Future updateTime(Map<String, dynamic> data) {
+    return FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').doc(DateTime.now().dateKey).set(
+        data
+    );
+  }
+
+
+
+  FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).snapshots().listen((event) {
+  if (event.data()?['timestamp'] != imageTimestamp) {
+  imageTimestamp = event.data()?['timestamp'];
+  FirebaseStorage.instance.ref('${FirebaseAuth.instance.currentUser?.uid}.jpeg').getData().then((value) => {
+  setState(() {
+  image = value;
+  })
+  });
+  }
+  });
+
 }
 
 class FBAuth implements Auth {
+  late StreamSubscription<User?> _listener;
+
+  FBAuth() {
+    _listener = FirebaseAuth.instance.authStateChanges().listen((event) {
+      onAuthState?.call(event != null);
+    });
+
+  }
+
   @override
   Future<Result<String>> login({required String email, required String password}) async {
     try {
@@ -89,6 +121,9 @@ class FBAuth implements Auth {
       return Result.error(failure: ErrorModel(title: 'Account Error', message: e.code, actions: ['OK']));
     }
   }
+
+  @override
+  Function(bool p1)? onAuthState;
 
 }
 

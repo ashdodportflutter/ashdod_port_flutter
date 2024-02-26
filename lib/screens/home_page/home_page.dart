@@ -1,11 +1,9 @@
-import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:ashdod_port_flutter/engine/engine.dart';
-import 'package:ashdod_port_flutter/engine/servers/firebase_handler.dart';
+import 'package:ashdod_port_flutter/engine/servers/extensions.dart';
 import 'package:ashdod_port_flutter/engine/servers/server_factory.dart';
-import 'package:ashdod_port_flutter/engine/servers/server_simulation.dart';
-import 'package:ashdod_port_flutter/models/user.dart';
+import 'package:ashdod_port_flutter/screens/base_page.dart';
+import 'package:ashdod_port_flutter/screens/home_page/home_view_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -13,89 +11,31 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../models/popup_menu_option.dart';
+import '../../models/popup_menu_option.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomePage extends AppBasePage<HomePageModel, HomeViewModel> {
+  HomePage({required super.viewModel});
+
+
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  AppBasePageState<HomePageModel, HomeViewModel, HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends AppBasePageState<HomePageModel, HomeViewModel, HomePage> {
 
-  late List<PopUpOption> timeOption;
-  late StreamSubscription<User?> _listener;
-  Uint8List? image;
   Timestamp? imageTimestamp;
-  Map<String, dynamic> presence = {};
-
-  stamp(String key, int index) {
-    var now = DateTime.now();
-    presence[key] = now.millisecondsSinceEpoch;
-    FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').doc(now.dateKey()).set(
-        presence
-    );
-    setState(() {
-      timeOption[index].timestamp = now;
-    });
-  }
-
-  delete(PopUpOption  option) {
-    var now = DateTime.now();
-    presence.remove(option.key);
-    FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').doc(now.dateKey()).set(
-        presence
-    );
-    setState(() {
-      option.timestamp = null;
-    });
-  }
 
 
-  @override
-  void dispose() {
-    _listener.cancel();
-    super.dispose();
-  }
+
+
+
 
   @override
   void initState() {
     super.initState();
     Engine.instance.initialize(server: ServerFactory.createServer(ServerType.firebase));
-    _listener = FirebaseAuth.instance.authStateChanges().listen((event) {
-      if (event == null) {
-        Navigator.pushReplacementNamed(context, '/login');
-      } else {
-        FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).snapshots().listen((event) {
-          if (event.data()?['timestamp'] != imageTimestamp) {
-            imageTimestamp = event.data()?['timestamp'];
-            FirebaseStorage.instance.ref('${FirebaseAuth.instance.currentUser?.uid}.jpeg').getData().then((value) => {
-              setState(() {
-                image = value;
-              })
-            });
-          }
-        });
-        var now = DateTime.now();
-        FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').doc(now.dateKey()).get().then((value) {
-          setState(() {
-            value.data()?.keys.forEach((e) {
-              timeOption.firstWhere((element) => element.key == e).timestamp = DateTime.fromMillisecondsSinceEpoch(value.data()?[e]);
-              presence[e] = DateTime.fromMillisecondsSinceEpoch(value.data()?[e]).timestamp();
-            });
-          });
-        });
-      }
-    });
-    timeOption = [
-      PopUpOption(key: 'arrived', icon: Icon(Icons.login), text: 'Arrived', action: () {
-        stamp('arrived', 0);
-      }),
-      PopUpOption(key: 'left', icon: Icon(Icons.logout), text: 'Logout', action: () {
-        stamp('left', 1);
-      })
-    ];
+
   }
 
   @override
@@ -179,9 +119,9 @@ class _HomePageState extends State<HomePage> {
                     }
                   });
                 },
-                  child: image == null ? Image.asset('assets/girl1.jpeg') : CircleAvatar(child: Padding(
+                  child: model.image == null ? Image.asset('assets/girl1.jpeg') : CircleAvatar(child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: ClipOval(child: Image.memory(image!)),
+                    child: ClipOval(child: Image.memory(model.image!)),
                   ), radius: 100,)),
             ),
             Padding(
@@ -232,7 +172,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Column(
-        children: timeOption.map<Widget>((option) {
+        children: model.timeOption.map<Widget>((option) {
           return ListTile(
             leading: option.icon,
             trailing: PopupMenuButton<PopUpOption>(
@@ -245,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                     child: InkWell(
                       onTap: () {
                         Navigator.pop(context);
-                        delete(option);
+                        viewModel.delete(option);
                       },
                       child: Row(children: [e.icon, Padding(
                         padding: const EdgeInsets.only(left: 8.0),

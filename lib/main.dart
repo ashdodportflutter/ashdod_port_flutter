@@ -1,6 +1,7 @@
 import 'package:ashdod_port_flutter/screens/create_acount.dart';
 import 'package:ashdod_port_flutter/screens/getting_started.dart';
-import 'package:ashdod_port_flutter/screens/home_page.dart';
+import 'package:ashdod_port_flutter/screens/home_page/home_page.dart';
+import 'package:ashdod_port_flutter/screens/home_page/home_view_model.dart';
 import 'package:ashdod_port_flutter/screens/login_page.dart';
 import 'package:ashdod_port_flutter/screens/edit_user_page.dart';
 import 'package:ashdod_port_flutter/screens/presnce_list_page.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
         '/login': (BuildContext context) => LoginPage(viewModel: LoginViewModel(model: AppBaseModel()),),
         '/create_account': (BuildContext context) => CreateAccount(viewModel: CreateViewModel(model: AppBaseModel()),),
         '/edit_user_page': (BuildContext context) => EditUserPage(viewModel: EditUserViewModel(model: EditUserModel()),),
-        '/home_page': (BuildContext contex) => HomePage(),
+        '/home_page': (BuildContext contex) => HomePage(viewModel: HomeViewModel(model: HomePageModel()),),
         '/list': (BuildContext contex) => PresenceListPage(),
         '/users': (BuildContext contex) => UsersPage()
 
