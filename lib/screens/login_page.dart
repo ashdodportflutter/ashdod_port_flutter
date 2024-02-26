@@ -48,7 +48,7 @@ class _LoginPageState extends AppBasePageState<AppBaseModel, LoginViewModel, Log
                 child: Column(children: [
                   LoginButton(
                     onPressed: () {
-                      widget.viewModel.login(email: _usernameTextController.text, password: _passwordTextController.text);
+                     viewModel.login(email: _usernameTextController.text, password: _passwordTextController.text);
                     },
                     text: 'Login',
                   ),

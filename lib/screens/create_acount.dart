@@ -57,7 +57,7 @@ class _CreateAccountPageState extends AppBasePageState<AppBaseModel, CreateViewM
                     setState(() {
                       isLoading = true;
                     });
-                    widget.viewModel.createAccount(email: _emailTextController.text, password: _passwordTextController.text);
+                    viewModel.createAccount(email: _emailTextController.text, password: _passwordTextController.text);
                   },
                   text: 'Sign Up',
                 ),

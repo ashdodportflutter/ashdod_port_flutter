@@ -7,27 +7,29 @@ import 'package:observers_manager/base_page.dart';
 class AppBasePage<T extends AppBaseModel, VM extends AppViewModel<T>> extends BasePage<T, VM> {
   AppBasePage({required super.viewModel});
 
-
-
-
   @override
   State<AppBasePage<T, VM>> createState() => AppBasePageState();
 }
 
 class AppBasePageState<M extends AppBaseModel, VM extends AppViewModel<M>, T extends AppBasePage<M, VM>> extends BasePageState<M, VM, T> {
   Engine engine = Engine.instance;
-
+   late M model;
+   late VM viewModel;
   @override
   void initState() {
     super.initState();
     widget.viewModel.addObserver(this);
+    model= widget.viewModel.model;
+    viewModel=widget.viewModel;
   }
 
   @override
   void dispose() {
-    widget.viewModel.removeObserver(this);
+    viewModel.removeObserver(this);
     super.dispose();
   }
+
+
 
   Widget get body {
     return const Placeholder();
@@ -62,7 +64,7 @@ class AppBasePageState<M extends AppBaseModel, VM extends AppViewModel<M>, T ext
       body: Stack(
         children: [
           body,
-          widget.viewModel.model.isLoading ? loader : Container()
+         viewModel.model.isLoading ? loader : Container()
         ],
       ),
     );
