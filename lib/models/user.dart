@@ -18,7 +18,7 @@ extension MyDateFormat on DateTime {
     return DateFormat('dd/MM/yyyy').format(this);
   }
 
-  String dateKey() {
+  String get dateKey {
     return DateFormat('dd_MM_yyyy').format(this);
   }
 

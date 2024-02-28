@@ -1,10 +1,10 @@
 import 'package:ashdod_port_flutter/screens/base_page.dart';
-import 'package:ashdod_port_flutter/view_model/login_view_model.dart';
+import 'package:ashdod_port_flutter/screens/login_page/login_view_model.dart';
 import 'package:ashdod_port_flutter/view_model/view_model_base.dart';
 import 'package:flutter/material.dart';
 
-import '../components/app_buttons.dart';
-import '../components/app_text_field.dart';
+import '../../components/app_buttons.dart';
+import '../../components/app_text_field.dart';
 
 class LoginPage extends AppBasePage<AppBaseModel, LoginViewModel> {
   LoginPage({required super.viewModel});
@@ -48,7 +48,7 @@ class _LoginPageState extends AppBasePageState<AppBaseModel, LoginViewModel, Log
                 child: Column(children: [
                   LoginButton(
                     onPressed: () {
-                      widget.viewModel.login(email: _usernameTextController.text, password: _passwordTextController.text);
+                      viewModel.login(email: _usernameTextController.text, password: _passwordTextController.text);
                     },
                     text: 'Login',
                   ),
@@ -123,7 +123,6 @@ class _LoginPageState extends AppBasePageState<AppBaseModel, LoginViewModel, Log
 
   @override
   onNotify([AppBaseModel? data]) {
-    super.onNotify(data);
     if (data?.nextPage != null) {
       Navigator.pushReplacementNamed(context, data?.nextPage ?? '');
     } else {

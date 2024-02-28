@@ -14,7 +14,7 @@ class LoginViewModel extends AppViewModel<AppBaseModel> {
         // handle failure
       } else if (value.success != null) {
         model.isLoading = false,
-        model.nextPage = '/homa_page',
+        model.nextPage = '/home_page',
         notifyObserver(model)
       }
     });
