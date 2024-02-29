@@ -123,9 +123,9 @@ class _LoginPageState extends AppBasePageState<AppBaseModel, LoginViewModel, Log
 
   @override
   onNotify([AppBaseModel? data]) {
-    if (data?.nextPage != null) {
+    if (model.nextPage != null) {
       Navigator.pushReplacementNamed(context, data?.nextPage ?? '');
-    } else {
+    } else if (!model.isLoading) {
       notifyResetPassword();
     }
   }

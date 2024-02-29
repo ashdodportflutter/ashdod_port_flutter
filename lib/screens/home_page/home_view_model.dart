@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 import '../../engine/servers/server_factory.dart';
 import '../../models/popup_menu_option.dart';
@@ -43,15 +44,20 @@ class HomeViewModel extends AppViewModel<HomePageModel> {
             });
           }
         });
-        var now = DateTime.now();
-        FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').doc(now.dateKey).get().then((value) {
-          value.data()?.keys.forEach((e) {
-            model.timeOption.firstWhere((element) => element.key == e).timestamp = DateTime.fromMillisecondsSinceEpoch(value.data()?[e]);
-            model.presence[e] = DateTime.fromMillisecondsSinceEpoch(value.data()?[e]).timestamp();
-          });
-          notifyObserver();
-        });
+
       }
+    });
+  }
+
+  @override
+  onViewLoaded(data) {
+    var now = DateTime.now();
+    FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').doc(now.dateKey).get().then((value) {
+      value.data()?.keys.forEach((e) {
+        model.timeOption.firstWhere((element) => element.key == e).timestamp = DateTime.fromMillisecondsSinceEpoch(value.data()?[e]);
+        model.presence[e] = DateTime.fromMillisecondsSinceEpoch(value.data()?[e]);
+      });
+      notifyObserver();
     });
   }
 
@@ -75,6 +81,19 @@ class HomeViewModel extends AppViewModel<HomePageModel> {
     );
     option.timestamp = null;
     notifyObserver();
+  }
+
+  uploadImage(CroppedFile? file) {
+    file?.readAsBytes().then((bytes) => {
+      FirebaseStorage.instance.ref('${FirebaseAuth.instance.currentUser?.uid}.jpeg').putData(bytes).then((p0) => {
+        FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).update(
+            {'timestamp': FieldValue.serverTimestamp()})
+      }),
+    });
+  }
+
+  logout() {
+    FirebaseAuth.instance.signOut();
   }
 
   @override

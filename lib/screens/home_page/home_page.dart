@@ -29,17 +29,9 @@ class HomePage extends AppBasePage<HomePageModel, HomeViewModel> {
 class _HomePageState extends AppBasePageState<HomePageModel, HomeViewModel, HomePage> {
 
 
-
-
-
-  @override
-  void dispose() {
-    viewModel.dispose();
-    super.dispose();
-  }
-
   @override
   onNotify([HomePageModel? data]) {
+    super.onNotify();
     if (model.nextPage != null) {
       Navigator.of(context).pushReplacementNamed(model.nextPage!);
     }
@@ -114,12 +106,7 @@ class _HomePageState extends AppBasePageState<HomePageModel, HomeViewModel, Home
                                   lockAspectRatio: false),
                             ]
                         ).then((value) => {
-                          value?.readAsBytes().then((bytes) => {
-                            FirebaseStorage.instance.ref('${FirebaseAuth.instance.currentUser?.uid}.jpeg').putData(bytes).then((p0) => {
-                              FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).update(
-                                  {'timestamp': FieldValue.serverTimestamp()})
-                            }),
-                          })
+                          viewModel.uploadImage(value)
                         });
 
                       })
@@ -137,10 +124,7 @@ class _HomePageState extends AppBasePageState<HomePageModel, HomeViewModel, Home
                 leading: Icon(Icons.logout),
                 title: Text('Logout'),
                 onTap: () {
-                  FirebaseAuth.instance.signOut().then((value) => {
-                    Navigator.pop(context),
-                    Navigator.pop(context)
-                  });
+                  viewModel.logout();
                 },
               ),
             ),
