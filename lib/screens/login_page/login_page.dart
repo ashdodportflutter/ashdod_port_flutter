@@ -1,21 +1,23 @@
 import 'package:ashdod_port_flutter/screens/base_page.dart';
-import 'package:ashdod_port_flutter/view_model/login_view_model.dart';
+import 'package:ashdod_port_flutter/screens/login_page/login_view_model.dart';
 import 'package:ashdod_port_flutter/view_model/view_model_base.dart';
 import 'package:flutter/material.dart';
 
-import '../components/app_buttons.dart';
-import '../components/app_text_field.dart';
+import '../../components/app_buttons.dart';
+import '../../components/app_text_field.dart';
 
-class LoginPage extends BasePage<LoginViewModel> {
-  const LoginPage({super.key, required super.viewModel});
+class LoginPage extends AppBasePage<AppBaseModel, LoginViewModel> {
+  LoginPage({required super.viewModel});
+
+
 
   @override
-  BasePageState<BasePage<LoginViewModel>, BaseModel> createState() {
+  AppBasePageState<AppBaseModel, LoginViewModel, LoginPage> createState() {
     return _LoginPageState();
   }
 }
 
-class _LoginPageState extends BasePageState<LoginPage, BaseModel> {
+class _LoginPageState extends AppBasePageState<AppBaseModel, LoginViewModel, LoginPage> {
   final _passwordTextController = TextEditingController(text: 'Ntnhbhxu10');
   final _usernameTextController = TextEditingController(text: 'nissopa@gmail.com');
 
@@ -46,7 +48,7 @@ class _LoginPageState extends BasePageState<LoginPage, BaseModel> {
                 child: Column(children: [
                   LoginButton(
                     onPressed: () {
-                      widget.viewModel.login(email: _usernameTextController.text, password: _passwordTextController.text);
+                      viewModel.login(email: _usernameTextController.text, password: _passwordTextController.text);
                     },
                     text: 'Login',
                   ),
@@ -120,11 +122,10 @@ class _LoginPageState extends BasePageState<LoginPage, BaseModel> {
   }
 
   @override
-  onNotify([BaseModel? data]) {
-    super.onNotify(data);
-    if (data?.nextPage != null) {
+  onNotify([AppBaseModel? data]) {
+    if (model.nextPage != null) {
       Navigator.pushReplacementNamed(context, data?.nextPage ?? '');
-    } else {
+    } else if (!model.isLoading) {
       notifyResetPassword();
     }
   }

@@ -2,18 +2,19 @@
 import 'package:ashdod_port_flutter/engine/engine.dart';
 import 'package:ashdod_port_flutter/view_model/view_model_base.dart';
 import 'package:flutter/material.dart';
-import 'package:observers_manager/observer.dart';
+import 'package:observers_manager/base_page.dart';
 
-class BasePage<VM extends ViewModelBase> extends StatefulWidget {
-  final VM viewModel;
+class AppBasePage<T extends AppBaseModel, VM extends AppViewModel<T>> extends BasePage<T, VM> {
+  AppBasePage({required super.viewModel});
 
-  const BasePage({super.key, required this.viewModel});
+
+
 
   @override
-  State<BasePage<VM>> createState() => BasePageState();
+  AppBasePageState<T, VM, AppBasePage<T, VM>> createState() => AppBasePageState();
 }
 
-class BasePageState<T extends BasePage, M extends BaseModel> extends State<T> implements Observer<M> {
+class AppBasePageState<M extends AppBaseModel, VM extends AppViewModel<M>, T extends AppBasePage<M, VM>> extends BasePageState<M, VM, T> {
   Engine engine = Engine.instance;
 
   @override

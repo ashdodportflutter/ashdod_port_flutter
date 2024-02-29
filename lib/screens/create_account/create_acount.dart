@@ -1,22 +1,23 @@
 import 'package:ashdod_port_flutter/screens/base_page.dart';
-import 'package:ashdod_port_flutter/view_model/create_account_view_model.dart';
+import 'package:ashdod_port_flutter/screens/create_account/create_account_view_model.dart';
 import 'package:ashdod_port_flutter/view_model/view_model_base.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../components/app_buttons.dart';
-import '../components/app_text_field.dart';
+import '../../components/app_buttons.dart';
+import '../../components/app_text_field.dart';
 
 
 
-class CreateAccount extends BasePage<CreateViewModel> {
-  const CreateAccount({super.key, required super.viewModel});
+class CreateAccount extends AppBasePage<AppBaseModel, CreateViewModel> {
+  CreateAccount({required super.viewModel});
+
+
 
   @override
-  BasePageState<CreateAccount, BaseModel> createState() => _CreateAccountPageState();
+  AppBasePageState<AppBaseModel, CreateViewModel, CreateAccount> createState() => _CreateAccountPageState();
 }
 
-class _CreateAccountPageState extends BasePageState<CreateAccount, BaseModel> {
+class _CreateAccountPageState extends AppBasePageState<AppBaseModel, CreateViewModel, CreateAccount> {
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
   bool isLoading = false;
@@ -55,7 +56,7 @@ class _CreateAccountPageState extends BasePageState<CreateAccount, BaseModel> {
                     setState(() {
                       isLoading = true;
                     });
-                    widget.viewModel.createAccount(email: _emailTextController.text, password: _passwordTextController.text);
+                    viewModel.createAccount(email: _emailTextController.text, password: _passwordTextController.text);
                   },
                   text: 'Sign Up',
                 ),
@@ -81,7 +82,7 @@ class _CreateAccountPageState extends BasePageState<CreateAccount, BaseModel> {
 
 
   @override
-  onNotify([BaseModel? data]) {
+  onNotify([AppBaseModel? data]) {
     super.onNotify(data);
     if (data != null) {
       Navigator.pushReplacementNamed(context, '/home_page');

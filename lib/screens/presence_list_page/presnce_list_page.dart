@@ -1,45 +1,19 @@
-import 'package:ashdod_port_flutter/models/day_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ashdod_port_flutter/screens/base_page.dart';
+import 'package:ashdod_port_flutter/screens/presence_list_page/presence_list_view_model.dart';
 import 'package:flutter/material.dart';
 
-class PresenceListPage extends StatefulWidget {
-  const PresenceListPage({super.key});
+class PresenceListPage extends AppBasePage<PresenceModel, PresenceViewModel> {
+  PresenceListPage({required super.viewModel});
+
+
+
+
 
   @override
-  State<PresenceListPage> createState() => _PresenceListPageState();
+  AppBasePageState<PresenceModel, PresenceViewModel, PresenceListPage> createState() => _PresenceListPageState();
 }
 
-class _PresenceListPageState extends State<PresenceListPage> {
-  List<DayModel>? days;
-
-  @override
-  void initState() {
-    super.initState();
-    // For observing the resluts online
-    FirebaseFirestore.instance
-        .collection('employees')
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .collection('presence')
-        .snapshots()
-        .listen((value) {
-      setState(() {
-        days = value.docs.map((e) => DayModel(e.data())).toList();
-      });
-    });
-    
-    // For getting the reslults once
-    // FirebaseFirestore.instance
-    //     .collection('employees')
-    //     .doc(FirebaseAuth.instance.currentUser?.uid)
-    //     .collection('presence')
-    //     .get()
-    //     .then((value) {
-    //   setState(() {
-    //     days = value.docs.map((e) => DayModel(e.data())).toList();
-    //   });
-    // });
-  }
+class _PresenceListPageState extends AppBasePageState<PresenceModel, PresenceViewModel, PresenceListPage> {
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +21,7 @@ class _PresenceListPageState extends State<PresenceListPage> {
       appBar: AppBar(),
       body: ListView.separated(
           itemBuilder: (context, index) {
-            var day = days?[index];
+            var day = model.days?[index];
             return Column(children: [
               SizedBox(
                   height: 30,
@@ -90,7 +64,7 @@ class _PresenceListPageState extends State<PresenceListPage> {
               color: Colors.grey,
             );
           },
-          itemCount: days?.length ?? 0),
+          itemCount: model.days?.length ?? 0),
     );
   }
 }
