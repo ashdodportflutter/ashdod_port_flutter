@@ -3,11 +3,13 @@ import 'package:ashdod_port_flutter/engine/servers/server.dart';
 import 'package:ashdod_port_flutter/models/role_model.dart';
 import 'package:ashdod_port_flutter/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:observers_manager/event_observer.dart';
+import 'package:observers_manager/event_obsevable.dart';
 import 'package:observers_manager/observer_data.dart';
 import 'package:observers_manager/observer_response.dart';
 import 'package:observers_manager/observers_manager.dart';
 
-class Engine {
+class Engine with EventObservable {
   static final Engine _instance = Engine._();
   static Engine get instance => _instance;
   Engine._();
@@ -15,6 +17,12 @@ class Engine {
 
   initialize({ required Server server }) {
     this.server = server;
+    this.server.authenticator.authState = (isLoggedIn) {
+      notifyObservers(ObservedData(event: 'authState', data: isLoggedIn));
+    };
+    server.fetcher.onTimestampChange = (timestamp) {
+      notifyObservers(ObservedData(event: 'timestamp', data: timestamp));
+    };
   }
 
   Future<List<AppUser>?> fetchUsers(RoleModel role) async {

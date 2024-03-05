@@ -57,7 +57,8 @@ class _LoginPageState extends AppBasePageState<AppBaseModel, LoginViewModel, Log
                     child: InkWell(
                       child: Text("forget Password"),
                       onTap: () {
-                        notifyResetPassword();
+                        viewModel.resetPassword(_usernameTextController.text);
+                        // notifyResetPassword();
                         // Engine.instance.commitRequest(addTopic(ObserverData.withArgs(event: RequestType.resetPassword.name, arg0: _usernameTextController.text)));
                         print("forget Password");
                       },

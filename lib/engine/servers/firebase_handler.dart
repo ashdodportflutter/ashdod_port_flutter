@@ -1,8 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:ashdod_port_flutter/engine/servers/extensions.dart';
 import 'package:ashdod_port_flutter/engine/servers/server.dart';
 import 'package:ashdod_port_flutter/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:observers_manager/observer_response.dart';
 
 import '../../models/day_model.dart';
@@ -28,6 +31,12 @@ extension ExtractRequest on String {
 }
 
 class FBDataFetcher extends DataFetcher {
+  FBDataFetcher() {
+    FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).snapshots().listen((event) {
+      onTimestampChange?.call(event.data()?['timestamp']);
+    });
+  }
+
   @override
   Future<Result<List<RoleModel>>> fetchRoles() async {
     var roles = await FirebaseFirestore.instance.collection('roles').orderBy('orderBy', descending: false).get();
@@ -43,9 +52,55 @@ class FBDataFetcher extends DataFetcher {
     return Result.success(success: true);
   }
 
+  @override
+  Future<Result<Map<String, dynamic>>> fetchPresence([Map<String, dynamic>? data]) async {
+    var now = DateTime.now();
+    var data = await FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').doc(now.dateKey).get();
+    if (data.data() != null) {
+      return Result.success(success: data.data());
+    }
+    return Result.error(failure: ErrorModel(title: 'Error', message: 'No presence for this user', actions: ['OK']));
+  }
+
+  @override
+  Future<Result<bool>> updatePresence(Map<String, dynamic> data) async {
+    var now = DateTime.now();
+    await FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').doc(now.dateKey).set(
+        data
+    );
+    return Result.success(success: true);
+  }
+
+  @override
+  Future<Result<bool>> uploadFile(Uint8List data) async {
+    var upload = await FirebaseStorage.instance.ref('${FirebaseAuth.instance.currentUser?.uid}.jpeg').putData(data);
+    if (upload.state == TaskState.success) {
+      FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).update(
+          {'timestamp': FieldValue.serverTimestamp()});
+      return Result.success(success: true);
+    }
+    return Result.error(failure: ErrorModel(title: 'Error', message: 'Failed to upload Image', actions: ['OK']));
+  }
+
+  @override
+  Future<Result<Uint8List>> fetchUserImage() async {
+    var result = await FirebaseStorage.instance.ref('${FirebaseAuth.instance.currentUser?.uid}.jpeg').getData();
+    if (result == null) {
+      return Result.error(failure: ErrorModel(title: '', message: '', actions: []));
+    }
+    return Result.success(success: result);
+  }
+
 }
 
 class FBAuth implements Auth {
+
+  FBAuth() {
+    FirebaseAuth.instance.authStateChanges().listen((event) {
+      authState?.call(event != null);
+    });
+  }
+
   @override
   Future<Result<String>> login({required String email, required String password}) async {
     try {
@@ -90,9 +145,18 @@ class FBAuth implements Auth {
     }
   }
 
+  @override
+  Function(bool)? authState;
+
+  @override
+  logout() {
+    FirebaseAuth.instance.signOut();
+  }
+
 }
 
 class FirebaseHandler implements Server {
+  FirebaseHandler();
 
   @override
   Auth get authenticator => FBAuth();

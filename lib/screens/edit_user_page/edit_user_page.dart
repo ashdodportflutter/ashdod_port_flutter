@@ -79,7 +79,7 @@ class _EditUserPageState extends AppBasePageState<EditUserModel, EditUserViewMod
       ),
       getDate(),
       LoginButton(
-          onPressed: viewModel.updateUser(),
+          onPressed: viewModel.updateUser,
           text: 'Submit')
     ],
   );

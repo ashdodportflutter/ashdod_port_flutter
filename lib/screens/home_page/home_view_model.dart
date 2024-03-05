@@ -1,14 +1,10 @@
-import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:ashdod_port_flutter/models/user.dart';
 import 'package:ashdod_port_flutter/view_model/view_model_base.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:observers_manager/event_observer.dart';
 
 import '../../engine/servers/server_factory.dart';
 import '../../models/popup_menu_option.dart';
@@ -21,6 +17,7 @@ class HomePageModel extends AppBaseModel {
 
 class HomeViewModel extends AppViewModel<HomePageModel> {
   HomeViewModel({required super.model}) {
+    observe(event: 'authState');
     engine.initialize(server: ServerFactory.createServer(ServerType.firebase));
     model.timeOption = [
       PopUpOption(key: 'arrived', icon: Icon(Icons.login), text: 'Arrived', action: () {
@@ -30,74 +27,76 @@ class HomeViewModel extends AppViewModel<HomePageModel> {
         stamp('left', 1);
       })
     ];
-    _listener = FirebaseAuth.instance.authStateChanges().listen((event) {
-      if (event == null) {
-        model.nextPage = '/login';
-        notifyObserver();
-      } else {
-        FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).snapshots().listen((event) {
-          if (event.data()?['timestamp'] != model.imageTimestamp) {
-            model.imageTimestamp = event.data()?['timestamp'];
-            FirebaseStorage.instance.ref('${FirebaseAuth.instance.currentUser?.uid}.jpeg').getData().then((value) => {
-              model.image = value,
-              notifyObserver()
-            });
-          }
-        });
-
-      }
-    });
+    // _listener = FirebaseAuth.instance.authStateChanges().listen((event) {
+    //
+    // });
   }
 
   @override
   onViewLoaded(data) {
-    var now = DateTime.now();
-    FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').doc(now.dateKey).get().then((value) {
-      value.data()?.keys.forEach((e) {
-        model.timeOption.firstWhere((element) => element.key == e).timestamp = DateTime.fromMillisecondsSinceEpoch(value.data()?[e]);
-        model.presence[e] = DateTime.fromMillisecondsSinceEpoch(value.data()?[e]);
+    engine.server.fetcher.fetchPresence().then((value) {
+      var data = value.success;
+
+      data?.keys.forEach((e) {
+        model.timeOption.firstWhere((element) => element.key == e).timestamp = DateTime.fromMillisecondsSinceEpoch(data[e]);
+        model.presence[e] = DateTime.fromMillisecondsSinceEpoch(data[e]);
       });
       notifyObserver();
     });
   }
 
-  late StreamSubscription<User?> _listener;
+  // late StreamSubscription<User?> _listener;
 
   stamp(String key, int index) {
     var now = DateTime.now();
     model.presence[key] = now.millisecondsSinceEpoch;
-    FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').doc(now.dateKey).set(
-        model.presence
-    );
+    engine.server.fetcher.updatePresence(model.presence).then((value) => { notifyObserver() });
     model.timeOption[index].timestamp = now;
-    notifyObserver();
   }
 
   delete(PopUpOption  option) {
     var now = DateTime.now();
     model.presence.remove(option.key);
-    FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).collection('presence').doc(now.dateKey).set(
-        model.presence
-    );
+    engine.server.fetcher.updatePresence(model.presence).then((value) => { notifyObserver() });
     option.timestamp = null;
-    notifyObserver();
+
   }
 
   uploadImage(CroppedFile? file) {
-    file?.readAsBytes().then((bytes) => {
-      FirebaseStorage.instance.ref('${FirebaseAuth.instance.currentUser?.uid}.jpeg').putData(bytes).then((p0) => {
-        FirebaseFirestore.instance.collection('employees').doc(FirebaseAuth.instance.currentUser?.uid).update(
-            {'timestamp': FieldValue.serverTimestamp()})
-      }),
+    file?.readAsBytes().then((value) => {
+      engine.server.fetcher.uploadFile(value).then((value) => {
+        if (value.success ?? false) {
+          notifyObserver()
+        }
+      })
     });
   }
 
   logout() {
-    FirebaseAuth.instance.signOut();
+    engine.server.authenticator.logout();
   }
 
   @override
-  dispose() {
-    _listener.cancel();
+  onNotify(ObservedData data) {
+    switch(data.event) {
+      case 'authState':
+        if (data.data == false) {
+          model.nextPage = '/login';
+          engine.removeObserver(this);
+          notifyObserver();
+        } else {
+          observe(event: 'timestamp');
+        }
+        break;
+      case 'timestamp':
+        if (data.data != model.imageTimestamp) {
+          model.imageTimestamp = data.data;
+          engine.server.fetcher.fetchUserImage().then((value) => {
+            model.image = value.success,
+            notifyObserver()
+          });
+        }
+        break;
+    }
   }
 }
