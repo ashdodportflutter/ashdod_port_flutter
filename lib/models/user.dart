@@ -62,7 +62,6 @@ class AppUser {
     }
   }
 
-
   static final AppUser _instance = AppUser._();
   static AppUser get instance => _instance;
 

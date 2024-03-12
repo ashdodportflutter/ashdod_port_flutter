@@ -12,7 +12,6 @@ class EditUserPage extends AppBasePage<EditUserModel, EditUserViewModel> {
   EditUserPage({required super.viewModel});
 
 
-
   @override
   AppBasePageState<EditUserModel, EditUserViewModel, EditUserPage> createState() {
     return _EditUserPageState();
