@@ -1,4 +1,5 @@
 import 'package:ashdod_port_flutter/view_model/view_model_base.dart';
+import 'package:observers_manager/observer.dart';
 import 'package:observers_manager/view_model_base.dart';
 
 
@@ -11,11 +12,21 @@ class LoginViewModel extends AppViewModel<AppBaseModel> {
     notifyObserver(model);
     engine.server.authenticator.login(email: email, password: password).then((value) => {
       if (value.failure != null) {
-        // handle failure
+        notifyAlert(AlertModel(
+            title: 'Error',
+          body: 'Check you password',
+          actions: [
+            AlertAction(
+                title: 'OK',
+                onTap: () {
+                  notifyNavigate(NavigateModel(routeName: ''));
+                })
+          ]
+        ))
       } else if (value.success != null) {
         model.isLoading = false,
-        model.nextPage = '/home_page',
-        notifyObserver(model)
+        notifyObserver(),
+        notifyNavigate(NavigateModel(routeName: '/home_page'))
       }
     });
   }
