@@ -150,6 +150,17 @@ class _HomePageState extends AppBasePageState<HomePageModel, HomeViewModel, Home
                 },
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                leading: Icon(Icons.edit),
+                title: Text('Users Mvvm'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/users_mvvm');
+                },
+              ),
+            ),
           ],
         ),
       ),

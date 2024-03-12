@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AppTextField extends StatelessWidget {
-  const AppTextField({super.key, required this.text, required this.controller});
+   AppTextField({super.key, required this.text, required this.controller, this.onTextChange});
   final String text;
   final TextEditingController controller;
+  final Function(String)? onTextChange;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -14,6 +15,7 @@ class AppTextField extends StatelessWidget {
           Align(alignment: Alignment.topLeft, child: Text(text,style: TextStyle(fontSize: 16))),
           TextField(
             controller: controller,
+            onChanged:onTextChange,
             decoration: InputDecoration(
 
               prefixIcon: IconButton(

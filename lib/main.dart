@@ -6,6 +6,8 @@ import 'package:ashdod_port_flutter/screens/login_page/login_page.dart';
 import 'package:ashdod_port_flutter/screens/edit_user_page/edit_user_page.dart';
 import 'package:ashdod_port_flutter/screens/presence_list_page/presence_list_view_model.dart';
 import 'package:ashdod_port_flutter/screens/presence_list_page/presnce_list_page.dart';
+import 'package:ashdod_port_flutter/screens/user_mvvm/userMvvm_page.dart';
+import 'package:ashdod_port_flutter/screens/user_mvvm/usereMvvm_view_model.dart';
 import 'package:ashdod_port_flutter/screens/users_page.dart';
 import 'package:ashdod_port_flutter/screens/create_account/create_account_view_model.dart';
 import 'package:ashdod_port_flutter/screens/edit_user_page/edit_user_view_model.dart';
@@ -39,7 +41,8 @@ class MyApp extends StatelessWidget {
         '/edit_user_page': (BuildContext context) => EditUserPage(viewModel: EditUserViewModel(model: EditUserModel()),),
         '/home_page': (BuildContext contex) => HomePage(viewModel: HomeViewModel(model: HomePageModel()),),
         '/list': (BuildContext contex) => PresenceListPage(viewModel: PresenceViewModel(model: PresenceModel()),),
-        '/users': (BuildContext contex) => UsersPage()
+        '/users': (BuildContext contex) => UsersPage(),
+        '/users_mvvm':(BuildContext contex) => UserMvvmPage(viewModel: UserMvvmViewModel(model: UserModelMvvm()),)
 
       },
       theme: ThemeData(

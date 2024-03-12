@@ -1,7 +1,10 @@
 import 'package:ashdod_port_flutter/models/role_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:observers_manager/observer_response.dart';
+
+import '../../models/user.dart';
 
 class Result<T> {
   T? success;
@@ -30,6 +33,7 @@ abstract class Auth {
 abstract class DataFetcher {
   Function(Timestamp)? onTimestampChange;
   Future<Result<List<RoleModel>>> fetchRoles();
+  Future<Result<List<AppUser>>> fetchUsers(String? query);
   Future<Result<bool>> updateUser(Map<String, dynamic> data);
   Future<Result<Map<String, dynamic>>> fetchPresence([Map<String, dynamic>? data]);
   Future<Result<bool>> updatePresence(Map<String, dynamic> data);

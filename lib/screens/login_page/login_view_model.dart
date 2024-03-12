@@ -20,6 +20,8 @@ class LoginViewModel extends AppViewModel<AppBaseModel> {
                 title: 'OK',
                 onTap: () {
                   notifyNavigate(NavigateModel(routeName: ''));
+                  model.isLoading = false;
+                  notifyObserver(model);
                 })
           ]
         ))
