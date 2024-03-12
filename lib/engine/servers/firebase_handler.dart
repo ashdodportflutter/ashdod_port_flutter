@@ -91,6 +91,13 @@ class FBDataFetcher extends DataFetcher {
     return Result.success(success: result);
   }
 
+  @override
+  Future<Result<List<AppUser>>> fetchUsers([String? query]) async {
+    var users =query!=null? await FirebaseFirestore.instance.collection('employees').where('splittedName', arrayContains: query.toLowerCase()).get(): await FirebaseFirestore.instance.collection('employees').get();
+    return Result.success(success: users.docs.map((e) => AppUser.fromMap(e.data())).toList());
+
+  }
+
 }
 
 class FBAuth implements Auth {
